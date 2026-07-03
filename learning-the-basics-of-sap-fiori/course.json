@@ -1,0 +1,192 @@
+{
+  "course": "Learning the Basics of SAP Fiori",
+  "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori",
+  "modules": [
+    {
+      "index": 1,
+      "title": "Learning the Basics of SAP Fiori",
+      "lessons": [
+        {
+          "index": 1,
+          "title": "Resume learning",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/personalizing-sap-fiori_decea017-0eda-41c1-bea9-c83627443035"
+        },
+        {
+          "index": 2,
+          "title": "Introducing SAP Fiori",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/introducing-sap-fiori_c3915ced-ffd1-4127-a822-e217ff45fd72"
+        },
+        {
+          "index": 3,
+          "title": "Using SAP Fiori Launchpad",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/using-sap-fiori-launchpad_a9103226-f903-4afb-b471-c07be29c59e3"
+        },
+        {
+          "index": 4,
+          "title": "Exploring SAP Fiori Data Handling",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/exploring-sap-fiori-data-handling_c0701c78-f545-4219-8ace-beb7d28cdd09"
+        },
+        {
+          "index": 5,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/end-user-perspective_430105f0-e770-31b0-bdd7-8fab5d5399e0"
+        },
+        {
+          "index": 6,
+          "title": "Technology",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/explaining-user-interfaces_c2d82120-6a0c-49d2-b872-8b5352c0dfad"
+        },
+        {
+          "index": 7,
+          "title": "Explaining Data Services",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/explaining-data-services_d3477b9d-aa60-43fd-90b3-9ef71ccf75f8"
+        },
+        {
+          "index": 8,
+          "title": "Explaining Application Types",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/explaining-application-types_cbee34f0-8b7c-41b7-9be0-e8f7a733441b"
+        },
+        {
+          "index": 9,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/technology_c7774c6f-fd9a-376b-b158-20eca37aa74e"
+        },
+        {
+          "index": 10,
+          "title": "Architecture",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/describing-abap-platform_ac4d4abd-4761-4080-b707-e23a54b709c5"
+        },
+        {
+          "index": 11,
+          "title": "Describing SAP S/4HANA",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/describing-sap-s-4hana_b1260c05-e47c-4e46-914d-3b4cf1cde5d5"
+        },
+        {
+          "index": 12,
+          "title": "Explaining SAP Fiori Development",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/explaining-sap-fiori-development_e7330fcf-e183-495b-8485-1b53b23595d6"
+        },
+        {
+          "index": 13,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/architecture_88ae48ea-70c6-30f6-b4d8-6124433a3d58"
+        },
+        {
+          "index": 14,
+          "title": "Content Management",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/managing-sap-fiori-content_f7774ceb-cd83-45ff-b3ea-ad21e45a52b5"
+        },
+        {
+          "index": 15,
+          "title": "Creating SAP Fiori Spaces and Pages",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/creating-sap-fiori-spaces-and-pages_a13f2740-7386-4c78-9f37-4248268a8b35"
+        },
+        {
+          "index": 16,
+          "title": "Merging SAP Fiori Spaces and Pages",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/merging-sap-fiori-spaces-and-pages"
+        },
+        {
+          "index": 17,
+          "title": "Managing SAP Fiori Catalogs",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/managing-sap-fiori-catalogs_ab64715f-a452-43c4-9d99-ae95ec3403fa"
+        },
+        {
+          "index": 18,
+          "title": "Editing Business Catalogs",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/edit-business-catalogs"
+        },
+        {
+          "index": 19,
+          "title": "Creating Business Catalogs",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/creating-business-catalogs_d633c222-3ab4-4e10-8fb8-8db1d2688541"
+        },
+        {
+          "index": 20,
+          "title": "Adapting Technical Catalogs",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/creating-target-mappings_d1c22426-3f4a-44f1-aea8-810992c4833d"
+        },
+        {
+          "index": 21,
+          "title": "Creating Technical Catalogs",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/creating-technical-catalogs_aaedcee4-2e13-4ab5-b2f3-21402b9fdf87"
+        },
+        {
+          "index": 22,
+          "title": "Creating Replicable Catalogs",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/creating-replicable-catalogs_d1507705-2068-4216-ad0d-0078df478459"
+        },
+        {
+          "index": 23,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/content-management"
+        },
+        {
+          "index": 24,
+          "title": "Content Migration",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/migrating-sap-fiori-groups"
+        },
+        {
+          "index": 25,
+          "title": "Migrating None-Typed Technical Catalogs",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/migrating-none-typed-technical-catalogs"
+        },
+        {
+          "index": 26,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/content-migration"
+        },
+        {
+          "index": 27,
+          "title": "Content Administration",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/activating-sap-fiori-content-using-rapid-activation_e5061480-a49d-4007-ba78-9f60b89369e9"
+        },
+        {
+          "index": 28,
+          "title": "Describing Basic Roles for SAP Fiori",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/describing-basic-roles-for-sap-fiori_e86f4df9-b918-4566-a5da-c29406b06c5a"
+        },
+        {
+          "index": 29,
+          "title": "Configuring SAP Fiori Launchpad",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/configuring-sap-fiori-launchpad_be40d546-d8f8-4a6b-b69f-7c77e1a0e9e1"
+        },
+        {
+          "index": 30,
+          "title": "Troubleshooting SAP Fiori Launchpad",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/troubleshooting-sap-fiori-launchpad_cf4420a3-330c-4837-821f-674061305253"
+        },
+        {
+          "index": 31,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/content-administration_92d63e1b-177a-38eb-a1ce-2f42267be62b"
+        },
+        {
+          "index": 32,
+          "title": "Adaptation",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/using-the-ui-theme-designer_e269f16a-7009-4467-9b6f-4d3dd689da32"
+        },
+        {
+          "index": 33,
+          "title": "Adapting SAP Fiori UIs at Runtime",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/adapting-sap-fiori-uis-at-runtime_db9cbc8a-2660-49b3-8e0d-2ceb9416ac8d"
+        },
+        {
+          "index": 34,
+          "title": "Extending SAP Fiori Launchpad",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/extending-sap-fiori-launchpad_f5f3c83e-fdb1-46fc-89c5-fe123bb2b9c8"
+        },
+        {
+          "index": 35,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori/adaptation_9f8fd9cb-6b9c-30fa-b63b-d21d4d68faec"
+        },
+        {
+          "index": 36,
+          "title": "LIVE SESSION\nLearning the Basics of SAP Fiori",
+          "url": "https://learning.sap.com/live-sessions/learning-the-basics-of-sap-fiori"
+        }
+      ]
+    }
+  ]
+}
