@@ -1,0 +1,322 @@
+{
+  "course": "Developing an SAP Fiori Elements App Based on a CAP OData V4 Service",
+  "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service",
+  "modules": [
+    {
+      "index": 1,
+      "title": "Developing an SAP Fiori Elements App Based on a CAP OData V4 Service",
+      "lessons": [
+        {
+          "index": 1,
+          "title": "Start learning",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/using-sap-fiori-elements-get-to-know-the-benefits_d488aac7-06c1-4867-9a8b-817436004f92"
+        },
+        {
+          "index": 2,
+          "title": "Getting Started with SAP Fiori Elements: Understanding OData and Annotations",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/getting-started-with-sap-fiori-elements-understanding-odata-and-annotations_e936f375-fc74-4ed6-9820-11d3020f424c"
+        },
+        {
+          "index": 3,
+          "title": "Outlining the Benefits of SAP Fiori Elements for OData V4",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/outlining-the-benefits-of-sap-fiori-elements-for-odata-v4_a019eb1a-0749-4ce6-bb32-536821baec74"
+        },
+        {
+          "index": 4,
+          "title": "Using the SAP Cloud Application Programming Model (CAP)",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/using-the-sap-cloud-application-programming-model-cap-_ae6a9177-5c6f-44dd-9a55-05c2cd574412"
+        },
+        {
+          "index": 5,
+          "title": "Getting Started",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/getting-started_e9e6df20-b8a7-4af8-bd47-6d50c7c4a6ee"
+        },
+        {
+          "index": 6,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/getting-an-overview-of-sap-fiori-elements-for-odata-v4_34213e40-71b3-33c8-a315-7cf7d28e9ee8"
+        },
+        {
+          "index": 7,
+          "title": "Getting an Overview of SAP Fiori Tools",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/using-sap-fiori-tools-to-boost-your-app-development_e8fc3ad0-c57e-476a-a191-21a1c41cb521"
+        },
+        {
+          "index": 8,
+          "title": "Creating a Second App Using the Application Generator",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/creating-a-second-app-using-the-application-generator_dddee177-70e0-43a8-a384-7fc40739e452"
+        },
+        {
+          "index": 9,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/getting-an-overview-of-sap-fiori-tools_291a80e6-e9b5-3b6a-88be-9dac06a590f1"
+        },
+        {
+          "index": 10,
+          "title": "Understanding SAP Fiori Elements Templates",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/getting-an-overview-of-the-available-templates_b22c0190-714a-47e6-8609-e7fd6fe9bc49"
+        },
+        {
+          "index": 11,
+          "title": "Examining List Report and Object Page Features",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/examining-list-report-and-object-page-features_f4eed58a-6c42-430f-9eda-1b0f49c065f3"
+        },
+        {
+          "index": 12,
+          "title": "Taking a Closer Look at the Apps Used in the Training",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/taking-a-closer-look-at-the-apps-used-in-the-training_fb813e5d-7cec-4719-b192-a71a826314b8"
+        },
+        {
+          "index": 13,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/understanding-sap-fiori-elements-templates_b0bacf78-6cda-3d60-bddf-8f7b015f315e"
+        },
+        {
+          "index": 14,
+          "title": "Configuring the General Features of List Reports and Object Pages",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/configuring-the-flexible-column-layout_b5066855-aa7c-4943-a64b-64050ccfea75"
+        },
+        {
+          "index": 15,
+          "title": "Adjusting the Standard SAP Fiori Elements UI Texts",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/adjusting-the-standard-sap-fiori-elements-ui-texts_d774f6f4-4765-4ac8-8f42-ab7b75930355"
+        },
+        {
+          "index": 16,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/configuring-the-general-features-of-list-reports-and-object-pages_7ee3e1d6-a7a0-3374-9696-eecf2c843a7e"
+        },
+        {
+          "index": 17,
+          "title": "Configuring the List Report Filter Bar",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/adding-fields-to-the-filter-bar_e7c5b6ac-dc2c-44a5-8ee0-a1c7922da00c"
+        },
+        {
+          "index": 18,
+          "title": "Hiding the Filter Bar",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/hiding-the-filter-bar_d63a9e05-85ff-41f9-a9bb-0890c86d4369"
+        },
+        {
+          "index": 19,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/configuring-the-list-report-filter-bar_6dc70eef-8ee4-3119-8891-e9e2cdb08cd3"
+        },
+        {
+          "index": 20,
+          "title": "Examining Actions Available on the List Report",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/applying-generic-actions-provided-by-sap-fiori-elements_ee9f52af-318a-4979-a8b5-929c5edebbee"
+        },
+        {
+          "index": 21,
+          "title": "Creating App-Specific Actions",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/creating-app-specific-actions_af7b882c-aca4-4c12-9cbf-02e568901501"
+        },
+        {
+          "index": 22,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/examining-actions-available-on-the-list-report_e8e764b6-ba66-3cf7-becd-07af6f2c5dfa"
+        },
+        {
+          "index": 23,
+          "title": "Configuring the Content of Table Columns",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/creating-a-visual-representation-of-a-progress-indicator_e09671c3-25f7-4813-ab24-394c905ede50"
+        },
+        {
+          "index": 24,
+          "title": "Configuring Micro Charts to Visualize Key Figures",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/configuring-micro-charts-to-visualize-key-figures_cf7dc7e4-98d4-4c0b-84f9-626f43ced1c3"
+        },
+        {
+          "index": 25,
+          "title": "Configuring Contact Quick Views in a Table",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/configuring-contact-quick-views-in-a-table_ec64ed54-d2cb-4888-b6d0-5eacd3ddba1c"
+        },
+        {
+          "index": 26,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/configuring-the-content-of-table-columns_e01dae6d-b870-30b3-b813-6be831dde709"
+        },
+        {
+          "index": 27,
+          "title": "Using Multiple Views in the List Report",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/configuring-multiple-views-using-single-table-mode_f66bbb36-20de-4d26-a25a-f27048a5b78a"
+        },
+        {
+          "index": 28,
+          "title": "Creating Multiple Views Using Multiple Table Mode",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/creating-multiple-views-using-multiple-table-mode_aa0befbd-0bf8-492e-be4f-9fbe4dfc4c1b"
+        },
+        {
+          "index": 29,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/using-multiple-views-in-the-list-report_ab22f486-7a2c-3d0e-89eb-99a5be56f1e5"
+        },
+        {
+          "index": 30,
+          "title": "Shaping the Header Area of the Object Page",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/placing-key-figures-in-the-header-area_c9dca7b8-25e4-4b3d-b7f0-3b7e01b35c27"
+        },
+        {
+          "index": 31,
+          "title": "Enriching the Object Page Header with Micro Charts",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/enriching-the-object-page-header-with-micro-charts_b41281e3-2997-4e04-96c9-2ad1258006cf"
+        },
+        {
+          "index": 32,
+          "title": "Using the Singleton Entity",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/using-the-singleton-entity_fbea2947-c372-4bed-8d20-b61ceb327d4f"
+        },
+        {
+          "index": 33,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/shaping-the-header-area-of-the-object-page_f8ebc9e1-d934-3c8b-91ab-855a5c419339"
+        },
+        {
+          "index": 34,
+          "title": "Configuring the Body of the Object Page",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/adapting-input-fields_ffee63a6-16ca-4abf-ac1c-58c88cfa6f22"
+        },
+        {
+          "index": 35,
+          "title": "Enriching Value Help with Dependent Filtering",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/enriching-value-help-with-dependent-filtering_abc805bb-ac75-4263-a543-87ca99cb5bea"
+        },
+        {
+          "index": 36,
+          "title": "Suppressing Optional Information on Demand",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/suppressing-optional-information-on-demand_f8b1a28c-c499-402b-a4e5-04d40da734c5"
+        },
+        {
+          "index": 37,
+          "title": "Configuring Side Effects",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/configuring-side-effects_a7e5f948-c568-4cb9-acb4-37073eb958fa"
+        },
+        {
+          "index": 38,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/configuring-the-body-of-the-object-page_d3752eb3-9474-3552-9737-3d7f604c1b4e"
+        },
+        {
+          "index": 39,
+          "title": "Applying Dynamic Field Control and Validating User Input on the Object Page",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/dynamically-affecting-the-visibility-and-editability-of-ui-elements_dc77e765-a36d-4054-ba1d-d1fc9ab3ddfd"
+        },
+        {
+          "index": 40,
+          "title": "Verifying the User Input",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/verifying-the-user-input_e7f23ca9-d9f8-4bc6-906a-97e5c11b9b21"
+        },
+        {
+          "index": 41,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/applying-dynamic-field-control-and-validating-user-input-on-the-object-page_2799f50f-80b6-30ff-8a19-8e37eb2ec9f3"
+        },
+        {
+          "index": 42,
+          "title": "Discovering the Flexibility of the Programming Model for SAP Fiori Elements for OData V4",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/getting-an-overview-of-the-flexible-programming-model_fc9ea1ee-20a8-4add-b3f9-c8c8e3701ae0"
+        },
+        {
+          "index": 43,
+          "title": "Using Extension Points",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/using-extension-points_d613eea6-2548-4db3-a7c1-2ef9b52653b5"
+        },
+        {
+          "index": 44,
+          "title": "Using Building Blocks",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/using-building-blocks_b5fa3bd3-11de-428f-b6fc-e0668d2266ff"
+        },
+        {
+          "index": 45,
+          "title": "Using Controller Extensions",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/using-controller-extensions_f47e841f-2dd8-4b88-ba5e-39c0eedd983e"
+        },
+        {
+          "index": 46,
+          "title": "Adding a Custom Micro Chart",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/adding-a-custom-micro-chart_e266e9d1-fcde-4aa1-9a79-65bec1c62ef4"
+        },
+        {
+          "index": 47,
+          "title": "Using the Flexibility of the Programming Model for Freestyle SAPUI5 Apps",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/using-the-flexible-programming-model-for-your-freestyle-applications_d55be297-c526-4b8c-a6eb-75677d09c43d"
+        },
+        {
+          "index": 48,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/discovering-the-flexible-programming-model-of-sap-fiori-elements-for-odata-v4_ac7e42d9-bfbc-3197-af4a-3c20b4fd5717"
+        },
+        {
+          "index": 49,
+          "title": "Illustrating the Navigation Concept in SAP Fiori Elements for OData V4",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/examining-internal-and-external-navigation_afe50cc3-c65c-44df-8cea-1ec20c58636f"
+        },
+        {
+          "index": 50,
+          "title": "Configuring External Navigation",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/configuring-external-navigation_dd4d7f6f-7857-4604-b993-70012c702c3f"
+        },
+        {
+          "index": 51,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/illustrating-the-navigation-concept-in-sap-fiori-elements-for-odata-v4_23b49588-7d8b-3d71-9c10-049d123d1307"
+        },
+        {
+          "index": 52,
+          "title": "Discovering the Analytical List Page",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/examining-the-analytical-list-page_bfcfe9ae-c714-4213-8f44-323ca5598dc1"
+        },
+        {
+          "index": 53,
+          "title": "Adding a Chart to the List Report",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/adding-a-chart-to-the-list-report_d228124b-1918-40be-b386-16d9e5af6897"
+        },
+        {
+          "index": 54,
+          "title": "Creating Visual Filters",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/creating-visual-filters_f382a86d-2a99-4098-b283-40253b9f46f9"
+        },
+        {
+          "index": 55,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service/discovering-the-analytical-list-page_2327de06-26e4-34e9-bd94-9164b0fb802f"
+        },
+        {
+          "index": 56,
+          "title": "German",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service-de"
+        },
+        {
+          "index": 57,
+          "title": "Spanish",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service-es"
+        },
+        {
+          "index": 58,
+          "title": "French",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service-fr"
+        },
+        {
+          "index": 59,
+          "title": "Japanese",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service-jp"
+        },
+        {
+          "index": 60,
+          "title": "Korean",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service-ko"
+        },
+        {
+          "index": 61,
+          "title": "Portuguese",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service-br"
+        },
+        {
+          "index": 62,
+          "title": "Chinese",
+          "url": "https://learning.sap.com/courses/developing-an-sap-fiori-elements-app-based-on-a-cap-odata-v4-service-zh"
+        }
+      ]
+    }
+  ]
+}
