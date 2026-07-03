@@ -1,0 +1,232 @@
+{
+  "course": "Getting Started with Creating an SAP Fiori Elements App Based on an OData V4 RAP Service",
+  "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service",
+  "modules": [
+    {
+      "index": 1,
+      "title": "Getting Started with Creating an SAP Fiori Elements App Based on an OData V4 RAP Service",
+      "lessons": [
+        {
+          "index": 1,
+          "title": "Start learning",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/using-sap-fiori-elements-get-to-know-the-benefits"
+        },
+        {
+          "index": 2,
+          "title": "Outlining the Benefits of SAP Fiori Elements for OData V4",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/outlining-the-benefits-of-sap-fiori-elements-for-odata-v4"
+        },
+        {
+          "index": 3,
+          "title": "Getting Started with SAP Fiori Elements: Understanding OData and Annotations",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/getting-started-with-sap-fiori-elements-understanding-odata-and-annotations"
+        },
+        {
+          "index": 4,
+          "title": "Getting an Overview of Programming Models for Creating OData Services",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/getting-an-overview-of-programming-models-for-creating-odata-services"
+        },
+        {
+          "index": 5,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/getting-an-overview-of-sap-fiori-elements-for-odata-v4"
+        },
+        {
+          "index": 6,
+          "title": "Getting an Overview of ABAP RESTful Application Programming Model",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/getting-started"
+        },
+        {
+          "index": 7,
+          "title": "Creating an OData V4 Service",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/creating-an-odata-v4-service"
+        },
+        {
+          "index": 8,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/getting-an-overview-of-abap-restful-application-programming-model"
+        },
+        {
+          "index": 9,
+          "title": "Configuring ABAP CDS Annotations in the Back End",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/creating-a-list-report"
+        },
+        {
+          "index": 10,
+          "title": "Creating an Object Page",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/creating-an-object-page"
+        },
+        {
+          "index": 11,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/configuring-abap-cds-annotations-in-the-back-end"
+        },
+        {
+          "index": 12,
+          "title": "Getting an Overview of SAP Fiori Tools",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/using-sap-fiori-tools-to-boost-your-app-development"
+        },
+        {
+          "index": 13,
+          "title": "Creating an SAP Fiori Elements App Using the Application Generator",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/creating-an-sap-fiori-elements-app-using-the-application-generator"
+        },
+        {
+          "index": 14,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/getting-an-overview-of-sap-fiori-tools"
+        },
+        {
+          "index": 15,
+          "title": "Understanding SAP Fiori Elements Floorplans",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/getting-an-overview-of-the-available-templates"
+        },
+        {
+          "index": 16,
+          "title": "Examining List Report and Object Pages",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/examining-list-report-and-object-pages"
+        },
+        {
+          "index": 17,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/understanding-sap-fiori-elements-floorplans"
+        },
+        {
+          "index": 18,
+          "title": "Configuring General Settings of List Reports and Object Pages",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/configuring-the-flexible-column-layout"
+        },
+        {
+          "index": 19,
+          "title": "Configuring Initial Load Setting for Your App",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/configuring-initial-load-setting-for-your-app"
+        },
+        {
+          "index": 20,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/configuring-general-settings-of-list-reports-and-object-pages"
+        },
+        {
+          "index": 21,
+          "title": "Configuring Tables",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/adding-and-editing-table-columns-of-the-list-report-table"
+        },
+        {
+          "index": 22,
+          "title": "Adding a Table to the Object Page",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/adding-a-table-to-the-object-page"
+        },
+        {
+          "index": 23,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/configuring-tables"
+        },
+        {
+          "index": 24,
+          "title": "Getting an Overview of the Navigation Concept in SAP Fiori Elements Apps",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/examining-external-and-internal-navigation"
+        },
+        {
+          "index": 25,
+          "title": "Configuring Internal Navigation",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/configuring-internal-navigation"
+        },
+        {
+          "index": 26,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/getting-an-overview-of-the-navigation-concept-in-sap-fiori-elements-apps"
+        },
+        {
+          "index": 27,
+          "title": "Configuring Object Pages",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/configuring-the-header-area-of-the-object-page"
+        },
+        {
+          "index": 28,
+          "title": "Configuring Sections of the Object Page Body",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/configuring-sections-of-the-object-page-body"
+        },
+        {
+          "index": 29,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/configuring-object-pages"
+        },
+        {
+          "index": 30,
+          "title": "Examining the Flexible Programming Model",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/getting-an-overview-of-the-flexible-programming-model"
+        },
+        {
+          "index": 31,
+          "title": "Using Extension Points",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/using-extension-points"
+        },
+        {
+          "index": 32,
+          "title": "Using Building Blocks",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/using-building-blocks"
+        },
+        {
+          "index": 33,
+          "title": "Using the Flexible Programming Model for Your Freestyle Applications",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/using-the-flexible-programming-model-for-your-freestyle-applications"
+        },
+        {
+          "index": 34,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/examining-the-flexible-programming-model"
+        },
+        {
+          "index": 35,
+          "title": "Deploying an SAP Fiori Elements App",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/getting-an-overview-of-the-deploy-options"
+        },
+        {
+          "index": 36,
+          "title": "Deploying an App",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/deploying-an-app"
+        },
+        {
+          "index": 37,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service/deploying-an-sap-fiori-elements-app"
+        },
+        {
+          "index": 38,
+          "title": "German",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service-de"
+        },
+        {
+          "index": 39,
+          "title": "Spanish",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service-es"
+        },
+        {
+          "index": 40,
+          "title": "French",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service-fr"
+        },
+        {
+          "index": 41,
+          "title": "Japanese",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service-jp"
+        },
+        {
+          "index": 42,
+          "title": "Korean",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service-ko"
+        },
+        {
+          "index": 43,
+          "title": "Portuguese",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service-br"
+        },
+        {
+          "index": 44,
+          "title": "Chinese",
+          "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service-zh"
+        }
+      ]
+    }
+  ]
+}
