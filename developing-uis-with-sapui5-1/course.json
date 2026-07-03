@@ -1,0 +1,192 @@
+{
+  "course": "Developing UIs with SAPUI5",
+  "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1",
+  "modules": [
+    {
+      "index": 1,
+      "title": "Developing UIs with SAPUI5",
+      "lessons": [
+        {
+          "index": 1,
+          "title": "Start learning",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/getting-started-with-sapui5-development_b2b142f9-fb05-4a51-bdae-a107ab360021"
+        },
+        {
+          "index": 2,
+          "title": "Bootstrapping SAPUI5",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/bootstrapping-sapui5_a5b2d3e2-530e-4a47-9756-321b5edf152a"
+        },
+        {
+          "index": 3,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/loading-and-initializing-sapui5"
+        },
+        {
+          "index": 4,
+          "title": "Modularizing SAPUI5 Applications",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/defining-and-using-modules_ab210fc5-edce-4dfb-920e-4ec152db33f0"
+        },
+        {
+          "index": 5,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/modularizing-sapui5-applications"
+        },
+        {
+          "index": 6,
+          "title": "Working with Views and Controllers",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/working-with-xml-views_dfec8eb9-8b04-46b3-84fb-58a0ce10a22b"
+        },
+        {
+          "index": 7,
+          "title": "Working with View Controllers",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/working-with-view-controllers_c4691c5c-320a-4097-bb54-6f50364ebc38"
+        },
+        {
+          "index": 8,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/working-with-views-and-controllers"
+        },
+        {
+          "index": 9,
+          "title": "Structuring Applications via Components",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/configuring-and-instantiating-components_f4d569d4-8c84-44f3-8d07-8dce7fd0aa31"
+        },
+        {
+          "index": 10,
+          "title": "Using the Declarative API",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/using-the-declarative-api_d6b46253-61e2-41f2-9ed0-55e3261d9c23"
+        },
+        {
+          "index": 11,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/structuring-applications-via-components"
+        },
+        {
+          "index": 12,
+          "title": "Implementing the UI",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/structuring-the-ui-with-controls_b072eddd-a5cf-495f-ac69-aa2c9fb76b5a"
+        },
+        {
+          "index": 13,
+          "title": "Using Densities for Controls",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/using-densities-for-controls_ef068942-3030-474f-9436-4be3626f1f70"
+        },
+        {
+          "index": 14,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/implementing-the-ui"
+        },
+        {
+          "index": 15,
+          "title": "Dealing with Fragments as Reusable UI Parts",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/implementing-and-instantiating-xml-fragments_bd9dc4a9-7c9f-40dc-967e-ff555716c0f1"
+        },
+        {
+          "index": 16,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/dealing-with-fragments-as-reusable-ui-parts"
+        },
+        {
+          "index": 17,
+          "title": "Models and Data Binding",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/working-with-models_e8a80842-2cb6-48e3-86b3-321d324f8f2f"
+        },
+        {
+          "index": 18,
+          "title": "Implementing Aggregation Binding",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/implementing-aggregation-binding_ec3df9a2-1115-43bf-a863-cec775ae0a48"
+        },
+        {
+          "index": 19,
+          "title": "Implementing Element Binding",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/implementing-element-binding_a35e50ad-f826-4981-990b-39a4a5064509"
+        },
+        {
+          "index": 20,
+          "title": "Using Data Types",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/using-data-types_d37f74ff-4075-405e-a0ca-7c05baf8bf7b"
+        },
+        {
+          "index": 21,
+          "title": "Implementing and Using Formatter Functions",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/implementing-and-using-formatter-functions_c7f9608b-de6f-44a4-b022-98cab121a6d2"
+        },
+        {
+          "index": 22,
+          "title": "Sorting and Filtering",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/sorting-and-filtering_c49a908a-4cef-4234-bcfd-a32d0f03e7de"
+        },
+        {
+          "index": 23,
+          "title": "Using Expression Binding",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/using-expression-binding_f526aa89-c886-4747-b74a-224648380e76"
+        },
+        {
+          "index": 24,
+          "title": "Adapting Applications to Different Device Types",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/adapting-applications-to-different-device-types_a0e82bfa-56b0-4288-9fd3-eb8b7cc14b97"
+        },
+        {
+          "index": 25,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/models-and-data-binding"
+        },
+        {
+          "index": 26,
+          "title": "Localization",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/working-with-a-resource-model_da9e4eef-3a80-4db7-b23f-e318ffd6a5e7"
+        },
+        {
+          "index": 27,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/localization"
+        },
+        {
+          "index": 28,
+          "title": "OData Model",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/reading-data-through-an-odata-model_e7de231b-e1ae-46f9-a298-14da24ef940b"
+        },
+        {
+          "index": 29,
+          "title": "Creating New Entities through an OData Model",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/creating-new-entities-through-an-odata-model_aba01a3c-b613-4526-b4fa-c72a05596e2a"
+        },
+        {
+          "index": 30,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/odata-model"
+        },
+        {
+          "index": 31,
+          "title": "Routing and Navigation",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/enabling-the-routing_e04193e3-59fd-4cd9-ae26-68f6ef67af90"
+        },
+        {
+          "index": 32,
+          "title": "Navigating to Routes with Hard-Coded Patterns",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/navigating-to-routes-with-hard-coded-patterns_cdcbec57-0d70-4f27-bc9e-d741721d4ca3"
+        },
+        {
+          "index": 33,
+          "title": "Routing Back",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/routing-back_c9b9f625-a6c1-4b54-9d32-8196143d5ee5"
+        },
+        {
+          "index": 34,
+          "title": "Catching Invalid Hashes",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/catching-invalid-hashes_a2850f11-106a-4342-bced-05fd82a1610f"
+        },
+        {
+          "index": 35,
+          "title": "Navigating to Routes with Mandatory Parameters",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/navigating-to-routes-with-mandatory-parameters_e6978588-dc8c-4e23-8dfe-34edf19b278a"
+        },
+        {
+          "index": 36,
+          "title": "Quiz",
+          "url": "https://learning.sap.com/courses/developing-uis-with-sapui5-1/routing-and-navigation"
+        }
+      ]
+    }
+  ]
+}
