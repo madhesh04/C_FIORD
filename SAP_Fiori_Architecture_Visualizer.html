@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SAP Fiori Architecture — Interactive Visualizer</title>
+<style>
+:root {
+  --sap-blue: #0070f2;
+  --sap-dark: #003169;
+  --sap-light: #d1e8ff;
+  --sap-green: #107e3e;
+  --sap-orange: #e9730c;
+  --sap-red: #bb0000;
+  --bg: #f5f7fa;
+  --rail: #ffffff;
+  --line: #e0e6ef;
+  --ink: #1d2d44;
+  --ink-dim: #5a6a7e;
+  --ink-faint: #96a3b4;
+  --panel: #ffffff;
+  --accent: #0070f2;
+  --accent-soft: rgba(0,112,242,0.08);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; font-family: '72', 'SAP72', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--ink); }
+
+/* ── Layout ── */
+.app { display: grid; grid-template-columns: 280px 1fr; height: 100vh; overflow: hidden; }
+
+/* ── Left Rail ── */
+.rail {
+  background: var(--sap-dark);
+  display: flex; flex-direction: column; overflow: hidden;
+  border-right: 1px solid rgba(255,255,255,0.08);
+}
+.rail-head {
+  padding: 24px 20px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.rail-head .badge {
+  display: inline-block; background: var(--sap-blue); color: #fff;
+  font-size: 10px; font-weight: 700; letter-spacing: 1px;
+  padding: 3px 8px; border-radius: 3px; margin-bottom: 10px;
+  text-transform: uppercase;
+}
+.rail-head h1 { margin: 0; font-size: 15px; font-weight: 700; color: #fff; line-height: 1.3; }
+.rail-head p { margin: 6px 0 0; font-size: 11.5px; color: rgba(255,255,255,0.5); }
+
+.rail-list { flex: 1; overflow-y: auto; padding: 12px 10px; }
+.rail-list::-webkit-scrollbar { width: 4px; }
+.rail-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+.rail-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 8px;
+  font-size: 12.5px; color: rgba(255,255,255,0.55);
+  cursor: pointer; margin-bottom: 2px;
+  border-left: 3px solid transparent;
+  transition: all 0.18s;
+  user-select: none;
+}
+.rail-item .num {
+  font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.3);
+  min-width: 18px;
+}
+.rail-item .label { flex: 1; line-height: 1.3; }
+.rail-item .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(255,255,255,0.15); flex-shrink: 0;
+}
+.rail-item:hover { background: rgba(255,255,255,0.07); color: #fff; }
+.rail-item.active {
+  background: rgba(0,112,242,0.25); color: #fff;
+  border-left-color: var(--sap-blue);
+}
+.rail-item.active .dot { background: #5bbbff; }
+.rail-item.active .num { color: #5bbbff; }
+
+.rail-footer {
+  padding: 14px 16px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  font-size: 10.5px; color: rgba(255,255,255,0.3);
+}
+.rail-footer span { color: rgba(255,255,255,0.6); font-weight: 600; }
+
+/* ── Main ── */
+.main { display: flex; flex-direction: column; overflow: hidden; }
+
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 28px; height: 56px; background: var(--rail);
+  border-bottom: 1px solid var(--line); flex-shrink: 0;
+}
+.topbar .breadcrumb { font-size: 12px; color: var(--ink-dim); }
+.topbar .breadcrumb strong { color: var(--ink); font-weight: 600; }
+.topbar .pill {
+  font-size: 11px; padding: 4px 12px; border-radius: 20px;
+  background: #e8f4fd; color: var(--sap-blue); font-weight: 600;
+  cursor: pointer; border: 1px solid #c2dff7;
+  transition: all 0.18s;
+}
+.topbar .pill:hover { background: var(--sap-blue); color: #fff; }
+
+/* ── Progress Bar ── */
+.progress-bar { height: 3px; background: var(--line); flex-shrink: 0; }
+.progress-fill { height: 100%; background: var(--sap-blue); transition: width 0.4s ease; border-radius: 0 2px 2px 0; }
+
+/* ── Content ── */
+.content { flex: 1; overflow-y: auto; padding: 28px 32px 48px; }
+.content::-webkit-scrollbar { width: 6px; }
+.content::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+
+/* ── Unit Panel ── */
+.unit { display: none; }
+.unit.active { display: block; }
+
+.unit-header { margin-bottom: 24px; }
+.unit-tag { font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--sap-blue); margin-bottom: 8px; }
+.unit-title { font-size: 22px; font-weight: 700; color: var(--ink); margin: 0 0 6px; }
+.unit-sub { font-size: 13.5px; color: var(--ink-dim); margin: 0; line-height: 1.6; }
+
+/* ── Architecture Stack ── */
+.arch-stack { display: flex; flex-direction: column; gap: 0; margin: 24px 0; }
+
+.arch-layer {
+  border: 1.5px solid var(--line);
+  border-radius: 0; cursor: pointer;
+  transition: all 0.22s;
+  position: relative; overflow: hidden;
+}
+.arch-layer:first-child { border-radius: 10px 10px 0 0; }
+.arch-layer:last-child { border-radius: 0 0 10px 10px; }
+.arch-layer:not(:first-child) { border-top: none; }
+.arch-layer:hover { z-index: 2; box-shadow: 0 0 0 2px var(--sap-blue); border-color: var(--sap-blue); }
+.arch-layer.open { z-index: 3; box-shadow: 0 4px 20px rgba(0,112,242,0.12); }
+
+.arch-layer-head {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 20px; background: var(--panel);
+  transition: background 0.18s;
+}
+.arch-layer.open .arch-layer-head { background: #f0f7ff; }
+
+.arch-layer-icon {
+  width: 38px; height: 38px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.arch-layer-info { flex: 1; }
+.arch-layer-info .l-num { font-size: 10px; font-weight: 700; color: var(--ink-faint); letter-spacing: 0.8px; }
+.arch-layer-info .l-name { font-size: 14px; font-weight: 700; color: var(--ink); }
+.arch-layer-info .l-sub { font-size: 11.5px; color: var(--ink-dim); margin-top: 1px; }
+.arch-layer-arrow { font-size: 16px; color: var(--ink-faint); transition: transform 0.22s; }
+.arch-layer.open .arch-layer-arrow { transform: rotate(180deg); color: var(--sap-blue); }
+
+.arch-layer-body {
+  display: none; padding: 0 20px 18px;
+  background: #f8fbff; border-top: 1px solid #d8eaff;
+}
+.arch-layer.open .arch-layer-body { display: block; }
+
+.arch-connector {
+  text-align: center; padding: 4px 0; color: var(--sap-blue);
+  font-size: 18px; line-height: 1;
+}
+
+/* ── Flow Diagram ── */
+.flow-diagram {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 0; margin: 20px 0; padding: 24px;
+  background: #f0f7ff; border-radius: 12px;
+  border: 1.5px solid #c2dff7;
+}
+.flow-node {
+  background: #fff; border: 1.5px solid #c2dff7;
+  border-radius: 8px; padding: 10px 24px; font-size: 13px;
+  font-weight: 600; color: var(--sap-dark); text-align: center;
+  min-width: 220px; cursor: pointer; transition: all 0.18s;
+  position: relative;
+}
+.flow-node:hover { border-color: var(--sap-blue); background: #e8f4fd; transform: translateX(3px); }
+.flow-node.highlight { background: var(--sap-blue); color: #fff; border-color: var(--sap-dark); }
+.flow-arrow {
+  font-size: 20px; color: var(--sap-blue); line-height: 1;
+  padding: 2px 0;
+}
+.flow-label {
+  font-size: 10px; color: var(--ink-dim); text-align: center;
+  font-style: italic; margin-top: -4px; margin-bottom: 2px;
+}
+
+/* ── Cards ── */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; margin: 16px 0; }
+.card {
+  background: var(--panel); border: 1.5px solid var(--line);
+  border-radius: 10px; padding: 16px;
+  transition: all 0.18s;
+}
+.card:hover { border-color: var(--sap-blue); box-shadow: 0 2px 12px rgba(0,112,242,0.1); transform: translateY(-1px); }
+.card .card-icon { font-size: 22px; margin-bottom: 8px; }
+.card .card-title { font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+.card .card-body { font-size: 12px; color: var(--ink-dim); line-height: 1.5; }
+
+/* ── Info Box ── */
+.info-box {
+  display: flex; gap: 12px; padding: 14px 16px;
+  background: #fff8e6; border: 1.5px solid #f5c842;
+  border-radius: 10px; margin: 14px 0;
+}
+.info-box .ib-icon { font-size: 18px; flex-shrink: 0; }
+.info-box .ib-text { font-size: 12.5px; color: #6b4f00; line-height: 1.6; }
+.info-box .ib-text strong { font-weight: 700; color: #4a3400; }
+
+.tip-box {
+  display: flex; gap: 12px; padding: 16px 18px;
+  background: linear-gradient(135deg, #003169, #0050b3);
+  border-radius: 12px; margin: 20px 0; color: #fff;
+}
+.tip-box .tb-icon { font-size: 22px; flex-shrink: 0; }
+.tip-box .tb-text { font-size: 13px; line-height: 1.7; }
+.tip-box .tb-text strong { color: #ffde6a; }
+
+/* ── Table ── */
+.data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
+.data-table th {
+  background: var(--sap-dark); color: #fff; padding: 10px 14px;
+  text-align: left; font-size: 11.5px; font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.data-table th:first-child { border-radius: 8px 0 0 0; }
+.data-table th:last-child { border-radius: 0 8px 0 0; }
+.data-table td { padding: 10px 14px; border-bottom: 1px solid var(--line); color: var(--ink); vertical-align: top; }
+.data-table tr:hover td { background: var(--accent-soft); }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table .tag {
+  display: inline-block; padding: 2px 8px; border-radius: 4px;
+  font-size: 11px; font-weight: 600;
+}
+.tag-blue { background: #e0efff; color: #0050b3; }
+.tag-green { background: #e8f5ee; color: #107e3e; }
+.tag-orange { background: #fff3e0; color: #8f4a00; }
+.tag-red { background: #fff0f0; color: #990000; }
+
+/* ── Code Block ── */
+.code-block {
+  background: #0d1520; color: #c9d8f0; border-radius: 8px;
+  padding: 14px 18px; font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 12px; line-height: 1.7; margin: 12px 0; overflow-x: auto;
+  border: 1px solid #1e2d42;
+}
+.code-block .c-green { color: #4fd97a; }
+.code-block .c-blue { color: #5bbbff; }
+.code-block .c-yellow { color: #ffd966; }
+.code-block .c-orange { color: #ffaa44; }
+.code-block .c-gray { color: #6b7fa3; }
+
+/* ── Section Headers ── */
+.section-h { font-size: 15px; font-weight: 700; color: var(--sap-dark); margin: 22px 0 10px; display: flex; align-items: center; gap: 8px; }
+.section-h::before { content: ''; display: inline-block; width: 4px; height: 16px; background: var(--sap-blue); border-radius: 2px; }
+
+/* ── Quiz / Reveal ── */
+.quiz-block { background: #f0f7ff; border: 1.5px solid #c2dff7; border-radius: 10px; padding: 16px 18px; margin: 14px 0; }
+.quiz-q { font-size: 13.5px; font-weight: 600; color: var(--ink); margin-bottom: 10px; }
+.reveal-btn {
+  background: var(--sap-blue); color: #fff; border: none;
+  padding: 8px 18px; border-radius: 6px; font-size: 12.5px;
+  font-weight: 600; cursor: pointer; transition: all 0.18s;
+}
+.reveal-btn:hover { background: var(--sap-dark); }
+.quiz-ans { display: none; margin-top: 12px; font-size: 13px; color: var(--ink); line-height: 1.6; padding-top: 10px; border-top: 1px solid #c2dff7; }
+.quiz-ans.visible { display: block; }
+.check { color: var(--sap-green); font-weight: 700; }
+
+/* ── Accordion ── */
+.accordion { margin: 8px 0; }
+.acc-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; background: var(--panel);
+  border: 1.5px solid var(--line); border-radius: 8px;
+  cursor: pointer; font-size: 13px; font-weight: 600; color: var(--ink);
+  transition: all 0.18s; user-select: none;
+}
+.acc-head:hover { background: var(--accent-soft); border-color: var(--sap-blue); color: var(--sap-blue); }
+.acc-head.open { background: var(--accent-soft); border-color: var(--sap-blue); color: var(--sap-blue); border-radius: 8px 8px 0 0; }
+.acc-arrow { transition: transform 0.22s; }
+.acc-head.open .acc-arrow { transform: rotate(180deg); }
+.acc-body { display: none; padding: 14px 16px; background: #f8fbff; border: 1.5px solid var(--sap-blue); border-top: none; border-radius: 0 0 8px 8px; font-size: 12.5px; color: var(--ink-dim); line-height: 1.7; }
+.acc-head.open + .acc-body { display: block; }
+
+/* ── 3-Layer Visual ── */
+.three-layer {
+  display: grid; grid-template-rows: auto auto auto;
+  gap: 0; margin: 16px 0; border-radius: 12px; overflow: hidden;
+  border: 1.5px solid var(--line);
+}
+.layer-band {
+  padding: 14px 20px; text-align: center;
+  font-weight: 700; font-size: 13px;
+}
+.layer-band .lb-items { font-size: 11.5px; font-weight: 400; margin-top: 4px; opacity: 0.85; }
+.layer-arrow-band { text-align: center; padding: 6px; font-size: 22px; background: var(--bg); color: var(--sap-blue); }
+
+/* ── Animated Flow ── */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.pulse { animation: pulse 2s ease-in-out infinite; }
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.unit.active { animation: slideDown 0.3s ease; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ── LEFT RAIL ── -->
+  <div class="rail">
+    <div class="rail-head">
+      <div class="badge">SAP Fiori</div>
+      <h1>Architecture<br>Deep Dive</h1>
+      <p>7 Layers · End-to-End Flow</p>
+    </div>
+    <div class="rail-list">
+      <div class="rail-item active" onclick="showUnit(1,this)">
+        <span class="num">01</span>
+        <span class="label">Architecture Overview</span>
+        <span class="dot"></span>
+      </div>
+      <div class="rail-item" onclick="showUnit(2,this)">
+        <span class="num">02</span>
+        <span class="label">Layer 1 – End User</span>
+        <span class="dot"></span>
+      </div>
+      <div class="rail-item" onclick="showUnit(3,this)">
+        <span class="num">03</span>
+        <span class="label">Layer 2 – Fiori Launchpad</span>
+        <span class="dot"></span>
+      </div>
+      <div class="rail-item" onclick="showUnit(4,this)">
+        <span class="num">04</span>
+        <span class="label">Layer 3 – Auth & Authz</span>
+        <span class="dot"></span>
+      </div>
+      <div class="rail-item" onclick="showUnit(5,this)">
+        <span class="num">05</span>
+        <span class="label">Layer 4 – SAPUI5 App</span>
+        <span class="dot"></span>
+      </div>
+      <div class="rail-item" onclick="showUnit(6,this)">
+        <span class="num">06</span>
+        <span class="label">Layer 5 – OData Services</span>
+        <span class="dot"></span>
+      </div>
+      <div class="rail-item" onclick="showUnit(7,this)">
+        <span class="num">07</span>
+        <span class="label">Layer 6 – Business Logic</span>
+        <span class="dot"></span>
+      </div>
+      <div class="rail-item" onclick="showUnit(8,this)">
+        <span class="num">08</span>
+        <span class="label">Layer 7 – SAP HANA</span>
+        <span class="dot"></span>
+      </div>
+      <div class="rail-item" onclick="showUnit(9,this)">
+        <span class="num">09</span>
+        <span class="label">End-to-End Flow</span>
+        <span class="dot"></span>
+      </div>
+      <div class="rail-item" onclick="showUnit(10,this)">
+        <span class="num">10</span>
+        <span class="label">Key Components & Interview Tip</span>
+        <span class="dot"></span>
+      </div>
+    </div>
+    <div class="rail-footer">
+      <span>C_FIORD</span> · SAP Fiori Architecture
+    </div>
+  </div>
+
+  <!-- ── MAIN ── -->
+  <div class="main">
+    <div class="topbar">
+      <div class="breadcrumb">SAP Fiori Architecture &rsaquo; <strong id="topTitle">Overview</strong></div>
+      <button class="pill" onclick="nextUnit()">Next →</button>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="prog" style="width:10%"></div></div>
+
+    <div class="content">
+
+      <!-- ═══ UNIT 1 — Overview ═══ -->
+      <div class="unit active" id="unit-1">
+        <div class="unit-header">
+          <div class="unit-tag">Unit 01 · Architecture</div>
+          <h2 class="unit-title">SAP Fiori Architecture Overview</h2>
+          <p class="unit-sub">A user's request travels from the browser through 7 distinct layers to reach the SAP HANA database and back. Understanding this flow is the foundation of every SAP Fiori application.</p>
+        </div>
+
+        <div class="section-h">The 7-Layer Stack (click any layer to explore)</div>
+
+        <div class="arch-stack">
+          <div class="arch-layer" onclick="toggleLayer(this)">
+            <div class="arch-layer-head">
+              <div class="arch-layer-icon" style="background:#e8f4fd;">🌐</div>
+              <div class="arch-layer-info">
+                <div class="l-num">LAYER 1</div>
+                <div class="l-name">End User (Browser)</div>
+                <div class="l-sub">Chrome · Edge · Mobile · Tablet</div>
+              </div>
+              <div class="arch-layer-arrow">▾</div>
+            </div>
+            <div class="arch-layer-body">
+              <p style="font-size:13px;color:#2a4570;line-height:1.7;margin:10px 0 6px;">The entry point. Users access Fiori via a browser at a URL like <code style="background:#dce8ff;padding:1px 6px;border-radius:4px;">https://mycompany.launchpad.cfapps...</code>. They see tiles, apps, search, and notifications — all rendered by the browser through HTTPS.</p>
+            </div>
+          </div>
+          <div class="arch-connector">↕ HTTPS</div>
+
+          <div class="arch-layer" onclick="toggleLayer(this)">
+            <div class="arch-layer-head">
+              <div class="arch-layer-icon" style="background:#e8f5ee;">🏠</div>
+              <div class="arch-layer-info">
+                <div class="l-num">LAYER 2</div>
+                <div class="l-name">SAP Fiori Launchpad (FLP)</div>
+                <div class="l-sub">Tiles · Navigation · Personalization</div>
+              </div>
+              <div class="arch-layer-arrow">▾</div>
+            </div>
+            <div class="arch-layer-body">
+              <p style="font-size:13px;color:#2a4570;line-height:1.7;margin:10px 0 6px;">Think of FLP as the <strong>desktop of SAP</strong>. It is the unified entry point for all Fiori applications — providing tiles, groups, search, notifications, and spaces. Clicking a tile launches the corresponding SAPUI5 app.</p>
+            </div>
+          </div>
+          <div class="arch-connector">↕ Auth Flow</div>
+
+          <div class="arch-layer" onclick="toggleLayer(this)">
+            <div class="arch-layer-head">
+              <div class="arch-layer-icon" style="background:#fff3e0;">🔐</div>
+              <div class="arch-layer-info">
+                <div class="l-num">LAYER 3</div>
+                <div class="l-name">Authentication & Authorization</div>
+                <div class="l-sub">IAS · XSUAA · PFCG</div>
+              </div>
+              <div class="arch-layer-arrow">▾</div>
+            </div>
+            <div class="arch-layer-body">
+              <p style="font-size:13px;color:#2a4570;line-height:1.7;margin:10px 0 6px;"><strong>Authentication (IAS)</strong> — "Who are you?" — verifies identity via IAS or a corporate IdP (Azure AD).<br><strong>Authorization (XSUAA / PFCG)</strong> — "What are you allowed to do?" — controls role-based access to apps and data.</p>
+            </div>
+          </div>
+          <div class="arch-connector">↕ App Load</div>
+
+          <div class="arch-layer" onclick="toggleLayer(this)">
+            <div class="arch-layer-head">
+              <div class="arch-layer-icon" style="background:#f3eaff;">⚛️</div>
+              <div class="arch-layer-info">
+                <div class="l-num">LAYER 4</div>
+                <div class="l-name">SAPUI5 Application (Frontend)</div>
+                <div class="l-sub">XML Views · Controllers · Models · Routing</div>
+              </div>
+              <div class="arch-layer-arrow">▾</div>
+            </div>
+            <div class="arch-layer-body">
+              <p style="font-size:13px;color:#2a4570;line-height:1.7;margin:10px 0 6px;">The entire frontend runs in the browser as JavaScript. Project structure: <code style="background:#dce8ff;padding:1px 6px;border-radius:4px;">webapp/</code> containing Component.js, manifest.json, views, controllers, models, i18n, and css. SAPUI5 renders the UI and communicates with the backend via OData.</p>
+            </div>
+          </div>
+          <div class="arch-connector">↕ OData HTTP</div>
+
+          <div class="arch-layer" onclick="toggleLayer(this)">
+            <div class="arch-layer-head">
+              <div class="arch-layer-icon" style="background:#e8f4fd;">🔗</div>
+              <div class="arch-layer-info">
+                <div class="l-num">LAYER 5</div>
+                <div class="l-name">OData Services (API Layer)</div>
+                <div class="l-sub">OData V2 · OData V4 · CAP · RAP</div>
+              </div>
+              <div class="arch-layer-arrow">▾</div>
+            </div>
+            <div class="arch-layer-body">
+              <p style="font-size:13px;color:#2a4570;line-height:1.7;margin:10px 0 6px;">The frontend <strong>never</strong> accesses the database directly. All communication goes through OData REST APIs. Methods: GET (read), POST (create), PUT/PATCH (update), DELETE. OData services expose entity sets as standard HTTP endpoints.</p>
+            </div>
+          </div>
+          <div class="arch-connector">↕ Service Call</div>
+
+          <div class="arch-layer" onclick="toggleLayer(this)">
+            <div class="arch-layer-head">
+              <div class="arch-layer-icon" style="background:#e8f5ee;">⚙️</div>
+              <div class="arch-layer-info">
+                <div class="l-num">LAYER 6</div>
+                <div class="l-name">Business Logic</div>
+                <div class="l-sub">ABAP · CAP (Node.js/Java) · RAP</div>
+              </div>
+              <div class="arch-layer-arrow">▾</div>
+            </div>
+            <div class="arch-layer-body">
+              <p style="font-size:13px;color:#2a4570;line-height:1.7;margin:10px 0 6px;">This is where business rules are enforced — validations, calculations, workflows. Example: "Leave Days > Available Balance → Reject Request." Implemented in ABAP, CAP (Node.js or Java), or RAP behavior definitions.</p>
+            </div>
+          </div>
+          <div class="arch-connector">↕ SQL / HANA API</div>
+
+          <div class="arch-layer" onclick="toggleLayer(this)">
+            <div class="arch-layer-head">
+              <div class="arch-layer-icon" style="background:#fff0e0;">🗄️</div>
+              <div class="arch-layer-info">
+                <div class="l-num">LAYER 7</div>
+                <div class="l-name">Database — SAP HANA</div>
+                <div class="l-sub">In-memory · Column store · Real-time analytics</div>
+              </div>
+              <div class="arch-layer-arrow">▾</div>
+            </div>
+            <div class="arch-layer-body">
+              <p style="font-size:13px;color:#2a4570;line-height:1.7;margin:10px 0 6px;">SAP HANA is an in-memory columnar database that stores all business data — employees, sales orders, vendors, materials, purchase orders. Its in-memory architecture provides extremely fast read and analytical performance.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="three-layer" style="margin-top:24px;">
+          <div class="layer-band" style="background:#003169;color:#fff;">
+            Presentation Layer
+            <div class="lb-items">SAPUI5 · Fiori Launchpad</div>
+          </div>
+          <div class="layer-arrow-band">⇅</div>
+          <div class="layer-band" style="background:#0070f2;color:#fff;">
+            Application Layer
+            <div class="lb-items">OData · CAP · ABAP · RAP</div>
+          </div>
+          <div class="layer-arrow-band">⇅</div>
+          <div class="layer-band" style="background:#107e3e;color:#fff;">
+            Database Layer
+            <div class="lb-items">SAP HANA</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ UNIT 2 — Layer 1 User ═══ -->
+      <div class="unit" id="unit-2">
+        <div class="unit-header">
+          <div class="unit-tag">Layer 01 · Presentation</div>
+          <h2 class="unit-title">End User — Presentation Layer</h2>
+          <p class="unit-sub">Where the user interacts with SAP through a standard web browser. No software installation required.</p>
+        </div>
+
+        <div class="section-h">Supported Devices</div>
+        <div class="cards">
+          <div class="card">
+            <div class="card-icon">💻</div>
+            <div class="card-title">Laptop / Desktop</div>
+            <div class="card-body">Full desktop browser experience. Compact density mode. Best for data-heavy transactional tasks.</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">📱</div>
+            <div class="card-title">Mobile Phone</div>
+            <div class="card-body">Cozy density mode (larger touch targets). Responsive layout via sap.m controls. Optimized for manager approvals.</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">📟</div>
+            <div class="card-title">Tablet</div>
+            <div class="card-body">Mid-size form factor. SplitApp pattern shows list and detail simultaneously. Ideal for field work.</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">🌐</div>
+            <div class="card-title">Any Browser</div>
+            <div class="card-body">Chrome, Edge, Firefox, Safari. SAPUI5 is tested and certified across all major browsers.</div>
+          </div>
+        </div>
+
+        <div class="section-h">What the User Sees</div>
+        <div class="code-block">
+<span class="c-green">URL:</span> <span class="c-blue">https://mycompany.launchpad.cfapps.eu10.hana.ondemand.com</span>
+
+<span class="c-gray">User sees:</span>
+  ┌─────────────────────────────────────────┐
+  │   🏠  SAP Fiori Launchpad               │
+  │                                         │
+  │   [Leave Request]  [My Payslip]         │
+  │   [Travel Expense] [Timesheet]          │
+  │   [Approve Orders] [Analytics]          │
+  │                                         │
+  │   🔔 Notifications  🔍 Search           │
+  └─────────────────────────────────────────┘
+</div>
+
+        <div class="info-box">
+          <div class="ib-icon">💡</div>
+          <div class="ib-text"><strong>Key Point:</strong> The user never installs SAP software. Everything runs in the browser as a web application. SAPUI5 is a JavaScript framework — the app is downloaded and executed client-side.</div>
+        </div>
+
+        <div class="quiz-block">
+          <div class="quiz-q">Q: Why doesn't SAP Fiori require software installation on the client device?</div>
+          <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+          <div class="quiz-ans"><span class="check">✓</span> SAP Fiori apps are built on SAPUI5, a JavaScript framework that runs entirely in the browser. The application code is served from SAP BTP or an ABAP server and executed client-side — making it a true web application with zero installation overhead.</div>
+        </div>
+      </div>
+
+      <!-- ═══ UNIT 3 — Fiori Launchpad ═══ -->
+      <div class="unit" id="unit-3">
+        <div class="unit-header">
+          <div class="unit-tag">Layer 02 · Entry Point</div>
+          <h2 class="unit-title">SAP Fiori Launchpad (FLP)</h2>
+          <p class="unit-sub">The unified shell — the "desktop of SAP." Every Fiori application is accessed through the FLP via tiles.</p>
+        </div>
+
+        <div class="section-h">What FLP Provides</div>
+        <div class="cards">
+          <div class="card">
+            <div class="card-icon">🔲</div>
+            <div class="card-title">Application Tiles</div>
+            <div class="card-body">Each tile represents one Fiori app. It shows a count, status, or KPI from the backend. Clicking launches the app.</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">🗂️</div>
+            <div class="card-title">Groups & Spaces</div>
+            <div class="card-body">Tiles are organized into groups and spaces. Admins define default layouts; users personalize their home page.</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">🔍</div>
+            <div class="card-title">Global Search</div>
+            <div class="card-body">Enterprise search across all apps and data. Powered by SAP Enterprise Search or ABAP search providers.</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">🔔</div>
+            <div class="card-title">Notifications</div>
+            <div class="card-body">Real-time alerts for workflow tasks, approvals, and alerts. Users act directly from the notification.</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">👤</div>
+            <div class="card-title">User Menu</div>
+            <div class="card-body">Personalization, language, content density (Cozy/Compact), and settings all accessible from the user menu.</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">📐</div>
+            <div class="card-title">Content Density</div>
+            <div class="card-body">FLP reads the app's manifest.json to set Compact (desktop) or Cozy (touch) density on the &lt;body&gt; tag automatically.</div>
+          </div>
+        </div>
+
+        <div class="section-h">Example FLP Tile Set</div>
+        <div class="code-block">
+<span class="c-yellow">Employee Self Service Space</span>
+┌──────────────────────────────────────────────────┐
+│                                                  │
+│  [📅 Leave Request]    [💰 My Payslip]           │
+│     Pending: 2            March 2026             │
+│                                                  │
+│  [✈️ Travel Expense]   [⏱ Timesheet]             │
+│     Submit by Friday      8h / 8h today          │
+│                                                  │
+│  [📊 My Analytics]     [✅ Approve Orders]        │
+│     View Reports          Pending: 5             │
+│                                                  │
+└──────────────────────────────────────────────────┘
+         ↑ Clicking any tile launches the SAPUI5 app
+</div>
+
+        <div class="accordion">
+          <div class="acc-head" onclick="toggleAcc(this)">How are tiles assigned to users? <span class="acc-arrow">▾</span></div>
+          <div class="acc-body">Tiles are mapped to <strong>Fiori Catalog</strong> entries and assigned via <strong>Business Roles</strong> (PFCG/XSUAA). An admin creates a role, assigns catalogs and groups, and assigns the role to users. Only tiles the user is authorized for appear on their launchpad.</div>
+        </div>
+        <div class="accordion">
+          <div class="acc-head" onclick="toggleAcc(this)">What is the difference between a Catalog and a Group? <span class="acc-arrow">▾</span></div>
+          <div class="acc-body">A <strong>Catalog</strong> is a list of apps a user is authorized to use. A <strong>Group</strong> (or Space/Page) defines how those apps are visually arranged on the home screen. A user can have multiple catalogs and can customize how groups appear.</div>
+        </div>
+
+        <div class="quiz-block">
+          <div class="quiz-q">Q: What is the Fiori Launchpad's role in the architecture?</div>
+          <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+          <div class="quiz-ans"><span class="check">✓</span> The FLP is the unified entry point (shell) for all Fiori applications. It handles tile display, navigation, global search, notifications, and personalization. It also sets content density based on the app's manifest.json and the user's device.</div>
+        </div>
+      </div>
+
+      <!-- ═══ UNIT 4 — Auth ═══ -->
+      <div class="unit" id="unit-4">
+        <div class="unit-header">
+          <div class="unit-tag">Layer 03 · Security</div>
+          <h2 class="unit-title">Authentication &amp; Authorization</h2>
+          <p class="unit-sub">Two distinct security checks happen before any app data is accessed: verifying <em>who</em> you are, and determining <em>what</em> you can do.</p>
+        </div>
+
+        <div class="section-h">Authentication — "Who Are You?" (IAS)</div>
+        <div class="cards">
+          <div class="card">
+            <div class="card-icon">🔑</div>
+            <div class="card-title">IAS — Identity Authentication Service</div>
+            <div class="card-body">SAP's cloud-based identity provider. Handles login screens, MFA (multi-factor auth), and SSO across all SAP cloud apps.</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">🏢</div>
+            <div class="card-title">Corporate IdP (Azure AD, Okta)</div>
+            <div class="card-body">IAS can federate with corporate identity providers via SAML 2.0 or OIDC, enabling single sign-on with company credentials.</div>
+          </div>
+        </div>
+
+        <div class="section-h">Authorization — "What Can You Do?"</div>
+        <div class="cards">
+          <div class="card">
+            <div class="card-icon">☁️</div>
+            <div class="card-title">XSUAA (SAP BTP)</div>
+            <div class="card-body">Used in cloud-based Fiori apps (CAP/RAP on BTP). Roles and scopes defined in xs-security.json. Tokens issued as JWTs.</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">🖥️</div>
+            <div class="card-title">PFCG Roles (ABAP)</div>
+            <div class="card-body">Used in on-premise S/4HANA. Authorization objects and profiles assigned to users via transaction PFCG.</div>
+          </div>
+        </div>
+
+        <div class="section-h">Access Matrix Example</div>
+        <table class="data-table">
+          <thead>
+            <tr><th>User Role</th><th>Can Open HR App?</th><th>Can Approve Leaves?</th><th>Can View All Employees?</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="tag tag-blue">HR Manager</span></td><td>✅ Yes</td><td>✅ Yes</td><td>✅ Yes</td></tr>
+            <tr><td><span class="tag tag-green">Employee</span></td><td>✅ Yes (own data)</td><td>❌ No</td><td>❌ No</td></tr>
+            <tr><td><span class="tag tag-orange">Team Lead</span></td><td>✅ Yes</td><td>✅ Team only</td><td>❌ No</td></tr>
+            <tr><td><span class="tag tag-red">Guest</span></td><td>❌ No</td><td>❌ No</td><td>❌ No</td></tr>
+          </tbody>
+        </table>
+
+        <div class="info-box">
+          <div class="ib-icon">💡</div>
+          <div class="ib-text"><strong>Remember:</strong> Authentication and Authorization are separate. Authentication proves identity; Authorization controls access. In SAP, IAS handles authentication while XSUAA (BTP) or PFCG (ABAP) handles authorization.</div>
+        </div>
+
+        <div class="quiz-block">
+          <div class="quiz-q">Q: What is the difference between IAS and XSUAA?</div>
+          <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+          <div class="quiz-ans"><span class="check">✓</span> <strong>IAS (Identity Authentication Service)</strong> handles <em>authentication</em> — it verifies who the user is via login, MFA, and SSO. <strong>XSUAA</strong> handles <em>authorization</em> on SAP BTP — it issues OAuth tokens with scopes/roles that determine what the authenticated user can access. PFCG plays the XSUAA role in on-premise ABAP systems.</div>
+        </div>
+      </div>
+
+      <!-- ═══ UNIT 5 — SAPUI5 ═══ -->
+      <div class="unit" id="unit-5">
+        <div class="unit-header">
+          <div class="unit-tag">Layer 04 · Frontend</div>
+          <h2 class="unit-title">SAPUI5 Application</h2>
+          <p class="unit-sub">The client-side JavaScript application that runs in the browser, renders the UI, and orchestrates all communication with backend services.</p>
+        </div>
+
+        <div class="section-h">Standard Project Structure</div>
+        <div class="code-block">
+webapp/
+│
+├── <span class="c-yellow">Component.js</span>       <span class="c-gray">← App entry point, lifecycle hooks</span>
+├── <span class="c-yellow">manifest.json</span>      <span class="c-gray">← App descriptor: routing, models, services</span>
+│
+├── <span class="c-blue">view/</span>               <span class="c-gray">← XML views (the UI templates)</span>
+│   ├── App.view.xml
+│   └── Overview.view.xml
+│
+├── <span class="c-blue">controller/</span>         <span class="c-gray">← Business logic, event handlers</span>
+│   ├── App.controller.js
+│   └── Overview.controller.js
+│
+├── <span class="c-blue">model/</span>              <span class="c-gray">← JSON models, formatters</span>
+│   ├── models.js
+│   └── formatter.js
+│
+├── <span class="c-blue">i18n/</span>               <span class="c-gray">← Localization (translatable texts)</span>
+│   └── i18n.properties
+│
+└── <span class="c-blue">css/</span>                <span class="c-gray">← Custom styles</span>
+    └── style.css
+</div>
+
+        <div class="section-h">MVC Pattern</div>
+        <div class="cards">
+          <div class="card">
+            <div class="card-icon">🖼️</div>
+            <div class="card-title">Model (M)</div>
+            <div class="card-body">Holds the data. JSONModel for client-side data, ODataModel V4 for backend data. Supports property, aggregation, and element binding.</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">📄</div>
+            <div class="card-title">View (V)</div>
+            <div class="card-body">XML view defines the UI structure declaratively. Uses SAPUI5 controls like sap.m.Table, sap.m.Page, sap.m.Button. Bound to model via binding syntax.</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">⚙️</div>
+            <div class="card-title">Controller (C)</div>
+            <div class="card-body">Handles events, lifecycle hooks (onInit), and user interactions. Extends sap.ui.core.mvc.Controller. Implemented via sap.ui.define.</div>
+          </div>
+        </div>
+
+        <div class="section-h">Bootstrap Script (How SAPUI5 Loads)</div>
+        <div class="code-block">
+&lt;<span class="c-blue">script</span>
+  <span class="c-green">id</span>="sap-ui-bootstrap"
+  <span class="c-green">src</span>="<span class="c-yellow">resources/sap-ui-core.js</span>"
+  <span class="c-green">data-sap-ui-theme</span>="sap_horizon"
+  <span class="c-green">data-sap-ui-libs</span>="sap.m"
+  <span class="c-green">data-sap-ui-compatVersion</span>="edge"
+  <span class="c-green">data-sap-ui-async</span>="true"
+  <span class="c-green">data-sap-ui-onInit</span>="module:sap/ui/core/ComponentSupport"
+&gt;&lt;/<span class="c-blue">script</span>&gt;
+</div>
+
+        <div class="quiz-block">
+          <div class="quiz-q">Q: What is the role of manifest.json in an SAPUI5 application?</div>
+          <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+          <div class="quiz-ans"><span class="check">✓</span> manifest.json is the <strong>application descriptor</strong>. It defines the app's metadata (sap.app), UI settings (sap.ui), and SAPUI5-specific configuration (sap.ui5) — including routing, models, content densities, and service endpoints. The FLP reads it to configure tiles and the framework reads it to bootstrap the app.</div>
+        </div>
+      </div>
+
+      <!-- ═══ UNIT 6 — OData ═══ -->
+      <div class="unit" id="unit-6">
+        <div class="unit-header">
+          <div class="unit-tag">Layer 05 · API Layer</div>
+          <h2 class="unit-title">OData Services</h2>
+          <p class="unit-sub">The standardized API layer between the SAPUI5 frontend and the backend business logic. The frontend never queries the database directly.</p>
+        </div>
+
+        <div class="section-h">OData HTTP Methods</div>
+        <table class="data-table">
+          <thead><tr><th>HTTP Method</th><th>OData Operation</th><th>Purpose</th><th>Example</th></tr></thead>
+          <tbody>
+            <tr><td><span class="tag tag-blue">GET</span></td><td>Read</td><td>Fetch data from backend</td><td>GET /Employees</td></tr>
+            <tr><td><span class="tag tag-green">POST</span></td><td>Create</td><td>Create a new entity</td><td>POST /Employees</td></tr>
+            <tr><td><span class="tag tag-orange">PATCH</span></td><td>Update (partial)</td><td>Update specific fields</td><td>PATCH /Employees(101)</td></tr>
+            <tr><td><span class="tag tag-orange">PUT</span></td><td>Update (full)</td><td>Replace entire entity</td><td>PUT /Employees(101)</td></tr>
+            <tr><td><span class="tag tag-red">DELETE</span></td><td>Delete</td><td>Remove an entity</td><td>DELETE /Employees(101)</td></tr>
+          </tbody>
+        </table>
+
+        <div class="section-h">OData Request / Response Example</div>
+        <div class="code-block">
+<span class="c-gray">// Request from SAPUI5 app</span>
+<span class="c-blue">GET</span> /odata/v4/EmployeeService/<span class="c-yellow">Employees</span>?<span class="c-green">$select</span>=EmployeeID,Name,City
+              &amp;<span class="c-green">$filter</span>=City eq 'Walldorf'
+              &amp;<span class="c-green">$orderby</span>=Name asc
+
+<span class="c-gray">// JSON Response</span>
+{
+  "<span class="c-yellow">value</span>": [
+    { "<span class="c-green">EmployeeID</span>": 101, "<span class="c-green">Name</span>": "John", "<span class="c-green">City</span>": "Walldorf" },
+    { "<span class="c-green">EmployeeID</span>": 102, "<span class="c-green">Name</span>": "Alice", "<span class="c-green">City</span>": "Walldorf" }
+  ]
+}
+</div>
+
+        <div class="section-h">OData Versions Compared</div>
+        <table class="data-table">
+          <thead><tr><th>Feature</th><th>OData V2</th><th>OData V4</th></tr></thead>
+          <tbody>
+            <tr><td>Format</td><td>XML / JSON</td><td>JSON only</td></tr>
+            <tr><td>Batch Requests</td><td>$batch (changeset)</td><td>$batch with Group IDs</td></tr>
+            <tr><td>Server-Side Paging</td><td>$top / $skip</td><td>$top / $skip / $skiptoken</td></tr>
+            <tr><td>SAPUI5 Model</td><td>sap.ui.model.odata.v2.ODataModel</td><td>sap.ui.model.odata.v4.ODataModel</td></tr>
+            <tr><td>Recommendation</td><td>Legacy systems</td><td>✅ Preferred for new apps</td></tr>
+          </tbody>
+        </table>
+
+        <div class="quiz-block">
+          <div class="quiz-q">Q: Why doesn't the SAPUI5 frontend connect directly to SAP HANA?</div>
+          <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+          <div class="quiz-ans"><span class="check">✓</span> Direct DB access from a browser would be a severe security risk (credentials exposed, no auth control, no business logic enforcement). OData services provide a secure, standardized API layer that enforces authorization, applies business rules, and returns only the data the user is permitted to see — in a standardized JSON format.</div>
+        </div>
+      </div>
+
+      <!-- ═══ UNIT 7 — Business Logic ═══ -->
+      <div class="unit" id="unit-7">
+        <div class="unit-header">
+          <div class="unit-tag">Layer 06 · Logic</div>
+          <h2 class="unit-title">Business Logic Layer</h2>
+          <p class="unit-sub">Where SAP business rules are enforced — validations, calculations, workflows, and data operations — across three main implementation paradigms.</p>
+        </div>
+
+        <div class="section-h">Three Paradigms</div>
+
+        <div class="accordion">
+          <div class="acc-head" onclick="toggleAcc(this)">⚡ ABAP — Traditional On-Premise <span class="acc-arrow">▾</span></div>
+          <div class="acc-body">
+            <strong>Stack:</strong> Fiori → SAP Gateway → ABAP Class → Business Logic → DB<br><br>
+            ABAP (Advanced Business Application Programming) is SAP's proprietary language for S/4HANA on-premise. Business logic lives in ABAP classes, function modules, and BAPIs. OData services in ABAP are built using the SEGW transaction or Code-Based OData V4.
+          </div>
+        </div>
+
+        <div class="accordion">
+          <div class="acc-head" onclick="toggleAcc(this)">☁️ CAP — Cloud Application Programming Model <span class="acc-arrow">▾</span></div>
+          <div class="acc-body">
+            <strong>Stack:</strong> Fiori → CAP Service (Node.js or Java) → service.js → SAP HANA<br><br>
+            CAP is SAP's recommended framework for building cloud-native services on SAP BTP. You define a CDS (Core Data Services) schema, implement event handlers in Node.js or Java, and CAP auto-generates OData V4 endpoints. Excellent for new greenfield applications.
+          </div>
+        </div>
+
+        <div class="accordion">
+          <div class="acc-head" onclick="toggleAcc(this)">🏛️ RAP — ABAP RESTful Application Programming Model <span class="acc-arrow">▾</span></div>
+          <div class="acc-body">
+            <strong>Stack:</strong> Fiori → RAP Behavior Definition → Business Objects → DB<br><br>
+            RAP is the recommended approach for building transactional Fiori apps on S/4HANA Cloud. It uses ABAP CDS views + behavior definitions + behavior implementations to create enterprise-grade OData V4 services with built-in draft handling, validations, and actions.
+          </div>
+        </div>
+
+        <div class="section-h">Example Business Rule (Leave Validation)</div>
+        <div class="code-block">
+<span class="c-gray">// ABAP or CAP — pseudo-code logic</span>
+
+<span class="c-blue">on</span> before CREATE LeaveRequest {
+
+  <span class="c-yellow">requestedDays</span> = leaveRequest.EndDate - leaveRequest.StartDate;
+  <span class="c-yellow">availableBalance</span> = getLeaveBalance(employeeID);
+
+  <span class="c-blue">if</span> (requestedDays &gt; availableBalance) {
+    <span class="c-orange">reject</span>( message: <span class="c-green">"Insufficient leave balance"</span> );
+  }
+
+  <span class="c-blue">if</span> (leaveRequest.StartDate &lt; today()) {
+    <span class="c-orange">reject</span>( message: <span class="c-green">"Cannot request past dates"</span> );
+  }
+
+  <span class="c-gray">// Passes validation → write to database</span>
+}
+</div>
+
+        <div class="quiz-block">
+          <div class="quiz-q">Q: When would you choose CAP over ABAP for business logic?</div>
+          <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+          <div class="quiz-ans"><span class="check">✓</span> Choose <strong>CAP</strong> for new cloud-native apps on SAP BTP, especially when the team is comfortable with Node.js or Java and you need rapid development with auto-generated OData services. Choose <strong>ABAP/RAP</strong> when integrating with existing S/4HANA business logic, using standard SAP business objects, or building on S/4HANA Cloud where RAP is the strategic direction.</div>
+        </div>
+      </div>
+
+      <!-- ═══ UNIT 8 — SAP HANA ═══ -->
+      <div class="unit" id="unit-8">
+        <div class="unit-header">
+          <div class="unit-tag">Layer 07 · Database</div>
+          <h2 class="unit-title">SAP HANA — Database Layer</h2>
+          <p class="unit-sub">The in-memory, column-store database that powers all SAP applications. It stores every piece of business data — from employees to purchase orders.</p>
+        </div>
+
+        <div class="section-h">What SAP HANA Stores</div>
+        <div class="cards">
+          <div class="card">
+            <div class="card-icon">👥</div>
+            <div class="card-title">HR Data</div>
+            <div class="card-body">Employees, leave balances, payroll, org structure, headcount, performance data.</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">🛒</div>
+            <div class="card-title">Procurement</div>
+            <div class="card-body">Purchase orders, vendors, goods receipts, invoices, contracts.</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">💰</div>
+            <div class="card-title">Finance</div>
+            <div class="card-body">GL accounts, cost centers, profit centers, sales orders, financial statements.</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">📦</div>
+            <div class="card-title">Supply Chain</div>
+            <div class="card-body">Materials, stock levels, warehouses, deliveries, transfer orders.</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">🎫</div>
+            <div class="card-title">Customer Data</div>
+            <div class="card-body">Customers, sales agreements, service orders, CRM data.</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">📈</div>
+            <div class="card-title">Analytics</div>
+            <div class="card-body">Real-time embedded analytics, aggregations, KPIs — processed in-memory at very high speed.</div>
+          </div>
+        </div>
+
+        <div class="section-h">Why SAP HANA?</div>
+        <table class="data-table">
+          <thead><tr><th>Feature</th><th>Traditional DB</th><th>SAP HANA</th></tr></thead>
+          <tbody>
+            <tr><td>Storage</td><td>Disk-based</td><td>In-memory (RAM) + persistence</td></tr>
+            <tr><td>Processing</td><td>Row-oriented</td><td>Column-oriented (fast aggregations)</td></tr>
+            <tr><td>Analytics</td><td>Separate OLAP system needed</td><td>Real-time OLTP + OLAP combined</td></tr>
+            <tr><td>Speed</td><td>Seconds to minutes for reports</td><td>Sub-second response</td></tr>
+          </tbody>
+        </table>
+
+        <div class="section-h">DB Access Flow</div>
+        <div class="code-block">
+<span class="c-gray">// How data reaches the browser from HANA</span>
+
+Browser (<span class="c-yellow">SAPUI5 ODataModel</span>)
+  ↓  GET /Employees
+OData Service (<span class="c-yellow">CAP / RAP / ABAP</span>)
+  ↓  SELECT EmployeeID, Name FROM Employees
+SAP HANA (<span class="c-yellow">In-Memory Column Store</span>)
+  ↓  Result set (microseconds)
+Business Logic Layer
+  ↓  Apply filters / auth checks
+OData Response: <span class="c-green">{ "value": [...] }</span>
+  ↓
+SAPUI5 Table renders data on screen ✓
+</div>
+
+        <div class="quiz-block">
+          <div class="quiz-q">Q: Why is SAP HANA faster than traditional relational databases for analytics?</div>
+          <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+          <div class="quiz-ans"><span class="check">✓</span> SAP HANA stores data <strong>in-memory</strong> (eliminating disk I/O) and uses a <strong>column-oriented store</strong>, which is ideal for aggregations — only the relevant columns are read, not entire rows. This enables real-time OLTP and OLAP in the same system without separate data warehouses.</div>
+        </div>
+      </div>
+
+      <!-- ═══ UNIT 9 — End-to-End Flow ═══ -->
+      <div class="unit" id="unit-9">
+        <div class="unit-header">
+          <div class="unit-tag">End-to-End</div>
+          <h2 class="unit-title">Complete Request Flow</h2>
+          <p class="unit-sub">Trace a real user action — opening "My Leave Requests" — through every layer of the architecture from click to data display.</p>
+        </div>
+
+        <div class="section-h">Interactive Flow (click any step)</div>
+
+        <div class="flow-diagram">
+          <div class="flow-node" onclick="showDetail('d1',this)">👤 Employee opens Fiori Launchpad</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-node" onclick="showDetail('d2',this)">🔑 IAS — Authentication (Login)</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-node" onclick="showDetail('d3',this)">🔐 XSUAA / PFCG — Authorization Check</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-node" onclick="showDetail('d4',this)">🏠 FLP Renders Authorized Tiles</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-node" onclick="showDetail('d5',this)">🖱️ User Clicks "Leave Request" Tile</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-node" onclick="showDetail('d6',this)">⚛️ SAPUI5 App Loads (JavaScript)</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-node" onclick="showDetail('d7',this)">📡 GET /LeaveRequests (OData V4)</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-node" onclick="showDetail('d8',this)">⚙️ CAP / ABAP Service Handles Request</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-node" onclick="showDetail('d9',this)">🗄️ SAP HANA Returns Data</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-node" onclick="showDetail('d10',this)">📊 JSON → SAPUI5 Table Displayed ✓</div>
+        </div>
+
+        <div id="d1" class="detail-box" style="display:none;background:#f0f7ff;border:1.5px solid #c2dff7;border-radius:10px;padding:14px 18px;margin:10px 0;font-size:13px;color:#2a4570;line-height:1.7;">
+          <strong>Step 1 — User Access:</strong> The employee navigates to the company's Fiori Launchpad URL in their browser (Chrome/Edge). The browser makes an HTTPS request to the SAP BTP or ABAP server hosting the FLP.
+        </div>
+        <div id="d2" class="detail-box" style="display:none;background:#fff3e0;border:1.5px solid #f5c842;border-radius:10px;padding:14px 18px;margin:10px 0;font-size:13px;color:#4a3400;line-height:1.7;">
+          <strong>Step 2 — Authentication:</strong> IAS (Identity Authentication Service) intercepts the request. If the user has no valid session, they are redirected to the login screen. After entering credentials (or via SSO from Azure AD), IAS creates a session token.
+        </div>
+        <div id="d3" class="detail-box" style="display:none;background:#fff3e0;border:1.5px solid #f5c842;border-radius:10px;padding:14px 18px;margin:10px 0;font-size:13px;color:#4a3400;line-height:1.7;">
+          <strong>Step 3 — Authorization:</strong> XSUAA (BTP) or PFCG (ABAP) checks what roles the authenticated user has. Only tiles and apps the user is authorized for are rendered on the launchpad.
+        </div>
+        <div id="d4" class="detail-box" style="display:none;background:#e8f5ee;border:1.5px solid #b5dcc5;border-radius:10px;padding:14px 18px;margin:10px 0;font-size:13px;color:#0a4020;line-height:1.7;">
+          <strong>Step 4 — FLP Renders:</strong> The Fiori Launchpad shell loads. It reads the user's role assignments and displays only authorized tiles. The employee sees their ESS (Employee Self Service) tiles.
+        </div>
+        <div id="d5" class="detail-box" style="display:none;background:#e8f5ee;border:1.5px solid #b5dcc5;border-radius:10px;padding:14px 18px;margin:10px 0;font-size:13px;color:#0a4020;line-height:1.7;">
+          <strong>Step 5 — Tile Click:</strong> The user clicks the "Leave Request" tile. The FLP reads the target application URL from the tile configuration and initiates navigation using the SAP Router or hash-based routing.
+        </div>
+        <div id="d6" class="detail-box" style="display:none;background:#f3eaff;border:1.5px solid #c9a8f0;border-radius:10px;padding:14px 18px;margin:10px 0;font-size:13px;color:#2a0060;line-height:1.7;">
+          <strong>Step 6 — App Load:</strong> The browser downloads the SAPUI5 application files (JavaScript, XML views, CSS, i18n). Component.js initializes, manifest.json is read, the router starts, and the initial view (e.g., Overview) renders.
+        </div>
+        <div id="d7" class="detail-box" style="display:none;background:#f3eaff;border:1.5px solid #c9a8f0;border-radius:10px;padding:14px 18px;margin:10px 0;font-size:13px;color:#2a0060;line-height:1.7;">
+          <strong>Step 7 — OData Request:</strong> The SAPUI5 ODataModel V4 automatically sends <code style="background:#e0d0f8;padding:1px 6px;border-radius:4px;">GET /LeaveRequests?$filter=EmployeeID eq '101'</code> to the backend OData service. This is triggered by the list binding on the Table control.
+        </div>
+        <div id="d8" class="detail-box" style="display:none;background:#e8f4fd;border:1.5px solid #c2dff7;border-radius:10px;padding:14px 18px;margin:10px 0;font-size:13px;color:#002060;line-height:1.7;">
+          <strong>Step 8 — Service Layer:</strong> The CAP or ABAP service receives the request. It checks authorization (XSUAA scope), applies business logic filters (employee can only see own records), and queries SAP HANA via SQL/CDS.
+        </div>
+        <div id="d9" class="detail-box" style="display:none;background:#e8f4fd;border:1.5px solid #c2dff7;border-radius:10px;padding:14px 18px;margin:10px 0;font-size:13px;color:#002060;line-height:1.7;">
+          <strong>Step 9 — Database:</strong> SAP HANA executes the SELECT statement against the LeaveRequest table. The in-memory column store returns matching records in sub-millisecond time. The result set is passed back to the service layer.
+        </div>
+        <div id="d10" class="detail-box" style="display:none;background:#e8f5ee;border:1.5px solid #b5dcc5;border-radius:10px;padding:14px 18px;margin:10px 0;font-size:13px;color:#0a4020;line-height:1.7;">
+          <strong>Step 10 — Display:</strong> The OData service serializes the result as JSON. SAPUI5's ODataModel receives the response, updates the model data, and the bound Table control automatically re-renders with the employee's leave records. The round-trip is complete. ✓
+        </div>
+      </div>
+
+      <!-- ═══ UNIT 10 — Key Components & Interview Tip ═══ -->
+      <div class="unit" id="unit-10">
+        <div class="unit-header">
+          <div class="unit-tag">Reference · Interview Prep</div>
+          <h2 class="unit-title">Key Components &amp; Interview Tip</h2>
+          <p class="unit-sub">A complete reference table of all architectural components and a ready-to-use interview answer for SAP Fiori architecture questions.</p>
+        </div>
+
+        <div class="section-h">Complete Component Reference</div>
+        <table class="data-table">
+          <thead><tr><th>Component</th><th>Layer</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><strong>SAP Fiori Launchpad (FLP)</strong></td><td><span class="tag tag-blue">Presentation</span></td><td>Entry point for all Fiori apps — tiles, navigation, personalization</td></tr>
+            <tr><td><strong>SAPUI5</strong></td><td><span class="tag tag-blue">Presentation</span></td><td>JavaScript framework that renders the UI and runs in the browser</td></tr>
+            <tr><td><strong>IAS (Identity Authentication Service)</strong></td><td><span class="tag tag-orange">Security</span></td><td>Authentication — verifies <em>who</em> the user is (login, SSO, MFA)</td></tr>
+            <tr><td><strong>XSUAA</strong></td><td><span class="tag tag-orange">Security</span></td><td>Authorization on SAP BTP — issues JWT tokens with scopes/roles</td></tr>
+            <tr><td><strong>PFCG Roles</strong></td><td><span class="tag tag-orange">Security</span></td><td>Authorization in ABAP — role and authorization object assignment</td></tr>
+            <tr><td><strong>OData V2 / V4</strong></td><td><span class="tag tag-green">API</span></td><td>Standardized RESTful API layer between frontend and backend</td></tr>
+            <tr><td><strong>CAP (Cloud Application Programming)</strong></td><td><span class="tag tag-green">Logic</span></td><td>SAP's framework for building cloud services (Node.js or Java on BTP)</td></tr>
+            <tr><td><strong>RAP (ABAP RESTful Programming)</strong></td><td><span class="tag tag-green">Logic</span></td><td>ABAP framework for transactional OData V4 services on S/4HANA</td></tr>
+            <tr><td><strong>ABAP</strong></td><td><span class="tag tag-green">Logic</span></td><td>SAP's on-premise programming language for business logic</td></tr>
+            <tr><td><strong>SAP HANA</strong></td><td><span class="tag tag-red">Database</span></td><td>In-memory columnar database — stores all business data</td></tr>
+          </tbody>
+        </table>
+
+        <div class="section-h">Three-Layer Summary</div>
+        <div class="three-layer">
+          <div class="layer-band" style="background:#003169;color:#fff;">
+            🖥️ Presentation Layer
+            <div class="lb-items">SAPUI5 · Fiori Launchpad (FLP) · IAS + XSUAA/PFCG</div>
+          </div>
+          <div class="layer-arrow-band">⇅</div>
+          <div class="layer-band" style="background:#0070f2;color:#fff;">
+            ⚙️ Application / Service Layer
+            <div class="lb-items">OData V2/V4 · CAP · RAP · ABAP · Business Logic</div>
+          </div>
+          <div class="layer-arrow-band">⇅</div>
+          <div class="layer-band" style="background:#107e3e;color:#fff;">
+            🗄️ Database Layer
+            <div class="lb-items">SAP HANA (In-memory · Column Store · Real-time)</div>
+          </div>
+        </div>
+
+        <div class="tip-box">
+          <div class="tb-icon">🎤</div>
+          <div class="tb-text">
+            <strong>Interview Answer (memorize this):</strong><br><br>
+            "A user logs in through the <strong>SAP Fiori Launchpad</strong>. <strong>IAS</strong> authenticates the user and <strong>XSUAA</strong> or <strong>PFCG</strong> authorizes their access. The <strong>SAPUI5</strong> frontend then sends <strong>OData</strong> requests to <strong>CAP</strong>, <strong>RAP</strong>, or <strong>ABAP</strong> services, where business logic is executed. These services interact with <strong>SAP HANA</strong>, and the response is returned as JSON to the SAPUI5 application for display in the browser."
+          </div>
+        </div>
+
+        <div class="section-h">Self-Assessment Quiz</div>
+
+        <div class="quiz-block">
+          <div class="quiz-q">Q1: A user can open the app but cannot see the "Delete" button. Which layer is responsible?</div>
+          <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+          <div class="quiz-ans"><span class="check">✓</span> <strong>Layer 3 — Authorization</strong> (XSUAA or PFCG). The user is authenticated but lacks the authorization scope/role required to perform delete operations. The UI can hide the button dynamically using device/model binding based on the user's scope, or the backend can reject unauthorized DELETE requests.</div>
+        </div>
+
+        <div class="quiz-block">
+          <div class="quiz-q">Q2: Where in the architecture does "Leave Balance &lt; Requested Days → Reject" logic live?</div>
+          <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+          <div class="quiz-ans"><span class="check">✓</span> <strong>Layer 6 — Business Logic</strong> (CAP, RAP, or ABAP). This validation runs server-side in the service layer before any database write occurs. It is NOT implemented in SAPUI5 (frontend validation alone is insufficient — it can be bypassed).</div>
+        </div>
+
+        <div class="quiz-block">
+          <div class="quiz-q">Q3: What format does data arrive in when SAPUI5 receives it from an OData V4 service?</div>
+          <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+          <div class="quiz-ans"><span class="check">✓</span> <strong>JSON</strong>. OData V4 exclusively uses JSON format (unlike V2 which supported XML). The response has a standard structure with a <code style="background:#dce8ff;padding:1px 5px;border-radius:3px;">"value"</code> array for entity sets. SAPUI5's ODataModel V4 parses this automatically and updates the model, triggering UI re-render via data binding.</div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<script>
+  const TOTAL = 10;
+  const titles = [
+    '', 'Architecture Overview', 'Layer 1 – End User',
+    'Layer 2 – Fiori Launchpad', 'Layer 3 – Auth & Authz',
+    'Layer 4 – SAPUI5 App', 'Layer 5 – OData Services',
+    'Layer 6 – Business Logic', 'Layer 7 – SAP HANA',
+    'End-to-End Flow', 'Key Components & Interview Tip'
+  ];
+  let current = 1;
+
+  function showUnit(n, btn) {
+    document.querySelectorAll('.unit').forEach(u => u.classList.remove('active'));
+    document.querySelectorAll('.rail-item').forEach(i => i.classList.remove('active'));
+    document.getElementById('unit-' + n).classList.add('active');
+    if (btn) btn.classList.add('active');
+    current = n;
+    document.getElementById('topTitle').textContent = titles[n];
+    document.getElementById('prog').style.width = Math.round((n / TOTAL) * 100) + '%';
+    document.querySelector('.content').scrollTop = 0;
+  }
+
+  function nextUnit() {
+    const next = current < TOTAL ? current + 1 : 1;
+    const items = document.querySelectorAll('.rail-item');
+    showUnit(next, items[next - 1]);
+  }
+
+  function toggleLayer(el) {
+    el.classList.toggle('open');
+  }
+
+  function reveal(btn) {
+    const ans = btn.nextElementSibling;
+    ans.classList.toggle('visible');
+    btn.textContent = ans.classList.contains('visible') ? 'Hide Answer' : 'Reveal Answer';
+  }
+
+  function toggleAcc(head) {
+    const wasOpen = head.classList.contains('open');
+    document.querySelectorAll('.acc-head').forEach(h => h.classList.remove('open'));
+    if (!wasOpen) head.classList.add('open');
+  }
+
+  function showDetail(id, node) {
+    const boxes = document.querySelectorAll('.detail-box');
+    const box = document.getElementById(id);
+    const allNodes = document.querySelectorAll('.flow-node');
+
+    if (box.style.display === 'none') {
+      boxes.forEach(b => b.style.display = 'none');
+      allNodes.forEach(n => n.classList.remove('highlight'));
+      box.style.display = 'block';
+      node.classList.add('highlight');
+    } else {
+      box.style.display = 'none';
+      node.classList.remove('highlight');
+    }
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C_FIORD — Developing UIs with SAPUI5</title>
+<style>
+:root {
+  --sap-blue: #0070f2;
+  --sap-dark: #003169;
+  --sap-light: #ebf5ff;
+  --sap-accent: #0040b0;
+  --green: #16a34a;
+  --orange: #ea580c;
+  --red: #dc2626;
+  --gray: #71717a;
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --border: #e2e8f0;
+  --text: #1e293b;
+  --muted: #64748b;
+  --sidebar-w: 270px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;}
+
+/* SIDEBAR */
+#sidebar{
+  width:var(--sidebar-w);min-width:var(--sidebar-w);background:var(--sap-dark);
+  position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;
+  display:flex;flex-direction:column;
+}
+#sidebar-header{
+  padding:20px 18px 14px;background:linear-gradient(135deg,#001f4d,#003169);
+  border-bottom:1px solid rgba(255,255,255,0.1);
+}
+#sidebar-header .badge{
+  background:var(--sap-blue);color:#fff;font-size:10px;font-weight:700;
+  padding:3px 8px;border-radius:20px;letter-spacing:1px;display:inline-block;margin-bottom:8px;
+}
+#sidebar-header h1{color:#fff;font-size:15px;font-weight:700;line-height:1.3;}
+#sidebar-header p{color:rgba(255,255,255,0.5);font-size:11px;margin-top:4px;}
+
+#progress-bar-wrap{padding:14px 18px 0;
+}
+.progress-label{color:rgba(255,255,255,0.6);font-size:11px;margin-bottom:6px;display:flex;justify-content:space-between;}
+.progress-track{background:rgba(255,255,255,0.1);border-radius:4px;height:6px;}
+.progress-fill{background:var(--sap-blue);height:6px;border-radius:4px;transition:width 0.5s ease;width:0%;}
+
+nav{padding:12px 0;flex:1;}
+.unit-btn{
+  display:flex;align-items:center;gap:10px;width:100%;padding:10px 18px;
+  background:transparent;border:none;cursor:pointer;text-align:left;
+  transition:background 0.2s;color:rgba(255,255,255,0.7);font-size:13px;
+  border-left:3px solid transparent;
+}
+.unit-btn:hover{background:rgba(255,255,255,0.08);color:#fff;}
+.unit-btn.active{background:rgba(0,112,242,0.2);color:#fff;border-left-color:var(--sap-blue);}
+.unit-btn .num{
+  width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,0.1);
+  display:flex;align-items:center;justify-content:center;font-size:11px;
+  font-weight:700;flex-shrink:0;
+}
+.unit-btn.active .num{background:var(--sap-blue);}
+.unit-btn .label{line-height:1.3;}
+.unit-btn .unit-name{font-size:11px;opacity:0.6;display:block;}
+
+.sidebar-footer{padding:14px 18px;border-top:1px solid rgba(255,255,255,0.1);}
+.sidebar-footer p{color:rgba(255,255,255,0.4);font-size:10px;line-height:1.5;}
+
+/* MAIN */
+#main{margin-left:var(--sidebar-w);flex:1;min-width:0;}
+
+.top-bar{
+  position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--border);
+  padding:0 32px;height:52px;display:flex;align-items:center;justify-content:space-between;
+  box-shadow:0 1px 4px rgba(0,0,0,0.06);
+}
+.top-bar .breadcrumb{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;}
+.top-bar .breadcrumb span{color:var(--text);font-weight:600;}
+.top-bar .stats{display:flex;gap:16px;}
+.stat-chip{background:var(--sap-light);color:var(--sap-blue);font-size:11px;font-weight:600;
+  padding:4px 10px;border-radius:20px;
+}
+
+section.unit{padding:32px;max-width:1100px;display:none;}
+section.unit.active{display:block;animation:fadeIn 0.3s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+/* UNIT HEADER */
+.unit-header{
+  background:linear-gradient(135deg,var(--sap-dark),var(--sap-accent));
+  border-radius:12px;padding:28px 32px;color:#fff;margin-bottom:28px;
+  position:relative;overflow:hidden;
+}
+.unit-header::after{
+  content:'';position:absolute;right:-20px;top:-20px;
+  width:180px;height:180px;border-radius:50%;
+  background:rgba(255,255,255,0.05);
+}
+.unit-header .tag{
+  background:rgba(255,255,255,0.15);color:#fff;font-size:11px;font-weight:600;
+  padding:4px 10px;border-radius:20px;letter-spacing:0.5px;display:inline-block;margin-bottom:10px;
+}
+.unit-header h2{font-size:24px;font-weight:700;margin-bottom:8px;}
+.unit-header p{opacity:0.8;font-size:14px;line-height:1.6;}
+.unit-header .lessons-count{
+  margin-top:14px;display:flex;gap:16px;
+}
+.lc-item{display:flex;align-items:center;gap:6px;font-size:12px;opacity:0.9;}
+.lc-dot{width:8px;height:8px;border-radius:50%;background:#fff;}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:20px;overflow:hidden;}
+.card-head{
+  padding:14px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;background:#fafafa;
+}
+.card-head h3{font-size:15px;font-weight:600;}
+.card-head .icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.card-body{padding:20px;}
+
+/* CONCEPT GRID */
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-bottom:20px;}
+.concept-card{
+  background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px;
+  border-top:3px solid var(--sap-blue);transition:box-shadow 0.2s;
+}
+.concept-card:hover{box-shadow:0 4px 16px rgba(0,112,242,0.1);}
+.concept-card h4{font-size:13px;font-weight:700;color:var(--sap-dark);margin-bottom:6px;}
+.concept-card p{font-size:12px;color:var(--muted);line-height:1.6;}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;
+  padding:3px 8px;border-radius:20px;
+}
+.badge-blue{background:var(--sap-light);color:var(--sap-blue);}
+.badge-green{background:#dcfce7;color:var(--green);}
+.badge-orange{background:#fff7ed;color:var(--orange);}
+.badge-red{background:#fef2f2;color:var(--red);}
+.badge-gray{background:#f1f5f9;color:var(--gray);}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;font-size:13px;}
+.tbl th{background:var(--sap-dark);color:#fff;padding:10px 14px;text-align:left;font-weight:600;font-size:12px;}
+.tbl td{padding:9px 14px;border-bottom:1px solid var(--border);}
+.tbl tr:nth-child(even) td{background:#f8fafc;}
+.tbl tr:hover td{background:var(--sap-light);}
+
+/* CALLOUT */
+.callout{border-radius:8px;padding:14px 16px;margin:14px 0;display:flex;gap:12px;font-size:13px;}
+.callout-blue{background:var(--sap-light);border-left:4px solid var(--sap-blue);}
+.callout-green{background:#f0fdf4;border-left:4px solid var(--green);}
+.callout-orange{background:#fff7ed;border-left:4px solid var(--orange);}
+.callout .icon{font-size:16px;flex-shrink:0;margin-top:1px;}
+.callout .text{line-height:1.6;color:var(--text);}
+.callout strong{color:var(--sap-dark);}
+
+/* IMG */
+.lesson-img{width:100%;border-radius:8px;border:1px solid var(--border);margin:14px 0;display:block;}
+.img-caption{font-size:11px;color:var(--muted);text-align:center;margin-top:-10px;margin-bottom:14px;font-style:italic;}
+
+/* QUIZ */
+.quiz-section{background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:24px;margin-top:24px;}
+.quiz-section h3{font-size:16px;font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+.quiz-q{background:#fff;border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:12px;}
+.quiz-q .q-text{font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px;}
+.quiz-options label{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;padding:6px 0;color:var(--muted);}
+.quiz-options input[type=radio]{cursor:pointer;}
+.reveal-btn{
+  margin-top:10px;padding:6px 14px;background:var(--sap-blue);color:#fff;border:none;
+  border-radius:6px;font-size:12px;cursor:pointer;font-weight:600;
+}
+.reveal-btn:hover{background:var(--sap-accent);}
+.answer-reveal{display:none;margin-top:10px;padding:10px 14px;background:#dcfce7;border-radius:6px;font-size:13px;color:#166534;font-weight:600;}
+
+/* PYRAMID */
+.pyramid{display:flex;flex-direction:column;align-items:center;gap:4px;margin:20px 0;}
+.pyr-row{
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:600;color:#fff;border-radius:6px;cursor:default;
+  transition:transform 0.2s;
+}
+.pyr-row:hover{transform:scaleX(1.02);}
+
+/* TIMELINE */
+.timeline{position:relative;padding:10px 0;}
+.timeline::before{content:'';position:absolute;left:20px;top:0;bottom:0;width:2px;background:var(--sap-blue);}
+.tl-item{display:flex;gap:20px;margin-bottom:20px;align-items:flex-start;}
+.tl-dot{
+  width:42px;height:42px;border-radius:50%;background:var(--sap-blue);
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;flex-shrink:0;border:3px solid #fff;
+  box-shadow:0 0 0 2px var(--sap-blue);z-index:1;
+}
+.tl-content{background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px;flex:1;}
+.tl-content h4{font-size:14px;font-weight:700;color:var(--sap-dark);margin-bottom:4px;}
+.tl-content p{font-size:13px;color:var(--muted);line-height:1.5;}
+
+/* ACCORDION */
+.acc-item{border:1px solid var(--border);border-radius:8px;margin-bottom:8px;overflow:hidden;}
+.acc-head{
+  padding:12px 16px;cursor:pointer;display:flex;justify-content:space-between;
+  align-items:center;background:#fff;font-size:13px;font-weight:600;user-select:none;
+}
+.acc-head:hover{background:var(--sap-light);}
+.acc-body{display:none;padding:14px 16px;font-size:13px;color:var(--muted);line-height:1.7;border-top:1px solid var(--border);}
+.acc-body.open{display:block;}
+.acc-arrow{transition:transform 0.2s;font-size:12px;}
+.acc-arrow.open{transform:rotate(180deg);}
+
+/* LAYERS DIAGRAM */
+.layers{display:flex;flex-direction:column;gap:0;border-radius:10px;overflow:hidden;border:1px solid var(--border);}
+.layer{padding:16px 20px;display:flex;align-items:center;gap:14px;}
+.layer-1{background:#e0f2fe;border-bottom:1px solid #bae6fd;}
+.layer-2{background:#dcfce7;border-bottom:1px solid #bbf7d0;}
+.layer-3{background:#fef3c7;}
+.layer .licon{font-size:22px;}
+.layer h4{font-size:13px;font-weight:700;color:var(--sap-dark);}
+.layer p{font-size:12px;color:var(--muted);margin-top:2px;}
+
+/* TOOL CARDS */
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin:14px 0;}
+.tool-card{background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;}
+.tool-card .tc-icon{font-size:28px;margin-bottom:8px;}
+.tool-card h4{font-size:12px;font-weight:700;color:var(--sap-dark);margin-bottom:4px;}
+.tool-card .tc-code{font-family:monospace;font-size:11px;background:#f1f5f9;padding:2px 6px;border-radius:4px;color:var(--orange);}
+.tool-card p{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4;}
+
+/* FLOORPLANS */
+.floorplan-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin:14px 0;}
+.fp-card{background:#fff;border:2px solid var(--border);border-radius:10px;padding:16px;text-align:center;cursor:pointer;transition:all 0.2s;}
+.fp-card:hover,.fp-card.sel{border-color:var(--sap-blue);background:var(--sap-light);transform:translateY(-2px);}
+.fp-card .fp-icon{font-size:30px;margin-bottom:8px;}
+.fp-card h4{font-size:13px;font-weight:700;color:var(--sap-dark);}
+.fp-card p{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4;}
+
+code{font-family:monospace;background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:12px;color:var(--orange);}
+pre{background:#1e293b;color:#e2e8f0;padding:16px;border-radius:8px;font-size:12px;overflow-x:auto;margin:12px 0;line-height:1.6;}
+pre code{background:none;color:inherit;padding:0;}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:768px){.two-col{grid-template-columns:1fr;}}
+
+hr.divider{border:none;border-top:1px solid var(--border);margin:24px 0;}
+
+.highlight-box{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #bfdbfe;border-radius:10px;padding:18px 20px;margin:14px 0;}
+.highlight-box h4{color:var(--sap-dark);font-size:14px;font-weight:700;margin-bottom:8px;}
+.highlight-box ul{padding-left:18px;font-size:13px;color:var(--text);line-height:2;}
+
+.key-takeaways{background:linear-gradient(135deg,#0070f2,#003169);border-radius:10px;padding:22px;color:#fff;margin-top:24px;}
+.key-takeaways h3{font-size:16px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.key-takeaways ul{padding-left:18px;line-height:2;font-size:13px;}
+.key-takeaways li{opacity:0.9;}
+
+.scroll-top{
+  position:fixed;bottom:24px;right:24px;width:42px;height:42px;background:var(--sap-blue);
+  color:#fff;border:none;border-radius:50%;cursor:pointer;font-size:18px;
+  box-shadow:0 4px 12px rgba(0,112,242,0.4);display:none;align-items:center;justify-content:center;
+}
+.scroll-top.show{display:flex;}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside id="sidebar">
+  <div id="sidebar-header">
+    <div class="badge">C_FIORD</div>
+    <h1>Developing UIs with SAPUI5</h1>
+    <p>Module 2 — 7 Units · 36 Lessons</p>
+  </div>
+  <div id="progress-bar-wrap">
+    <div class="progress-label"><span>Progress</span><span id="pct">0%</span></div>
+    <div class="progress-track"><div class="progress-fill" id="pfill"></div></div>
+  </div>
+  <nav>
+    <button class="unit-btn active" onclick="showUnit(1,this)">
+      <span class="num">1</span>
+      <span class="label">Bootstrapping SAPUI5<span class="unit-name">Lessons 1–3 · BAS & Bootstrap</span></span>
+    </button>
+    <button class="unit-btn" onclick="showUnit(2,this)">
+      <span class="num">2</span>
+      <span class="label">App Structure<span class="unit-name">Lessons 4–11 · Modules · MVC · Components</span></span>
+    </button>
+    <button class="unit-btn" onclick="showUnit(3,this)">
+      <span class="num">3</span>
+      <span class="label">Building the UI<span class="unit-name">Lessons 12–16 · Controls & Fragments</span></span>
+    </button>
+    <button class="unit-btn" onclick="showUnit(4,this)">
+      <span class="num">4</span>
+      <span class="label">Models & Data Binding<span class="unit-name">Lessons 17–23 · JSON Model & Binding</span></span>
+    </button>
+    <button class="unit-btn" onclick="showUnit(5,this)">
+      <span class="num">5</span>
+      <span class="label">Devices & Localization<span class="unit-name">Lessons 24–27 · Responsive & i18n</span></span>
+    </button>
+    <button class="unit-btn" onclick="showUnit(6,this)">
+      <span class="num">6</span>
+      <span class="label">OData Model<span class="unit-name">Lessons 28–30 · OData V4</span></span>
+    </button>
+    <button class="unit-btn" onclick="showUnit(7,this)">
+      <span class="num">7</span>
+      <span class="label">Routing & Navigation<span class="unit-name">Lessons 31–36 · Router</span></span>
+    </button>
+  </nav>
+  <div class="sidebar-footer">
+    <p>📖 Study tip: Complete each unit quiz before moving on. All images load from your local folder.</p>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main id="main">
+  <div class="top-bar">
+    <div class="breadcrumb">C_FIORD › Module 2 › <span id="current-unit">Bootstrapping SAPUI5</span></div>
+    <div class="stats">
+      <span class="stat-chip">🎯 7 Units</span>
+      <span class="stat-chip">📝 36 Lessons</span>
+      <span class="stat-chip">⏱ ~1 Week</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════ UNIT 1 ═══════════════ -->
+  <section class="unit active" id="unit-1">
+    <div class="unit-header">
+      <div class="tag">UNIT 1 · FOUNDATIONS</div>
+      <h2>🚀 Bootstrapping SAPUI5</h2>
+      <p>Set up SAP Business Application Studio, then load and initialize the SAPUI5 runtime via the bootstrap script and its configuration options.</p>
+      <div class="lessons-count">
+        <div class="lc-item"><div class="lc-dot"></div>Lessons 1–3</div>
+        <div class="lc-item"><div class="lc-dot" style="background:#93c5fd"></div>BAS · Bootstrap · Quiz</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="icon" style="background:#eff6ff">💻</div>
+        <h3>SAP Business Application Studio (BAS)</h3>
+        <span class="badge badge-blue" style="margin-left:auto">Lesson 1</span>
+      </div>
+      <div class="card-body">
+        <p style="font-size:13px;line-height:1.8;margin-bottom:14px;">Development happens in a <strong>Dev Space</strong> — an environment with the tools/resources needed to build an app. This course uses the <strong>SAP Fiori</strong> dev space type, which bundles the SAP Fiori Tools extension (templates, CLI, code completion).</p>
+        <img class="lesson-img" src="./developing-uis-with-sapui5-1/images/7cf7557297e36c85.png" alt="Choose Create a Dev Space">
+        <p class="img-caption">↑ Creating a Dev Space in SAP Business Application Studio</p>
+
+        <div class="concept-grid">
+          <div class="concept-card">
+            <h4>🗂️ Dev Space</h4>
+            <p>Environment with tools & resources for building an app. Type <strong>SAP Fiori</strong> supports Cloud Foundry, ABAP Cloud, S/4HANA.</p>
+          </div>
+          <div class="concept-card">
+            <h4>🔗 Git Source Control</h4>
+            <p>Clone remote repos via the <em>Clone from Git</em> tile or the Git panel. Always connect projects to Git for persistence.</p>
+          </div>
+          <div class="concept-card">
+            <h4>▶️ start-noflp</h4>
+            <p>Runs the app via index.html — no Fiori launchpad sandbox. Used for initial exercises.</p>
+          </div>
+          <div class="concept-card">
+            <h4>🧪 start-mock</h4>
+            <p>Simulates an OData back end via a mock server — used once an OData model is introduced.</p>
+          </div>
+        </div>
+
+        <div class="callout callout-blue">
+          <span class="icon">💡</span>
+          <div class="text">Preview an app via <strong>right-click a subfolder → Preview Application</strong>, or by running npm scripts from the terminal / Run and Debug pane.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="icon" style="background:#dcfce7">⚙️</div>
+        <h3>Bootstrapping SAPUI5</h3>
+        <span class="badge badge-blue" style="margin-left:auto">Lesson 2</span>
+      </div>
+      <div class="card-body">
+        <p style="font-size:13px;line-height:1.8;margin-bottom:14px;">To use SAPUI5 you must <strong>load and initialize</strong> the library. This is done via a bootstrap <code>&lt;script&gt;</code> tag that loads <code>sap-ui-core.js</code> — the standard bootstrap file (jQuery + jquery-ui-position + minimal sap.ui.core).</p>
+
+        <pre><code>&lt;script
+  id="sap-ui-bootstrap"
+  src="resources/sap-ui-core.js"
+  data-sap-ui-theme="sap_fiori_3"
+  data-sap-ui-libs="sap.m"
+  data-sap-ui-compatVersion="edge"
+&gt;&lt;/script&gt;</code></pre>
+
+        <div class="two-col">
+          <div class="callout callout-blue">
+            <span class="icon">📍</span>
+            <div class="text"><strong>Local load</strong> — relative path from an SAP Web server.</div>
+          </div>
+          <div class="callout callout-orange">
+            <span class="icon">🌐</span>
+            <div class="text"><strong>CDN load</strong> — versioned URL (e.g. <code>ui5.sap.com/1.96.16/...</code>) for a fixed version, or the generic/default URL for testing only.</div>
+          </div>
+        </div>
+
+        <h4 style="margin:16px 0 10px;font-size:14px;">Key Bootstrap Configuration Options</h4>
+        <table class="tbl">
+          <thead><tr><th>Attribute</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>data-sap-ui-theme</code></td><td>Theme to use (e.g. sap_fiori_3, sap_horizon)</td></tr>
+            <tr><td><code>data-sap-ui-libs</code></td><td>List of libraries to load initially (e.g. sap.m)</td></tr>
+            <tr><td><code>data-sap-ui-compatVersion</code></td><td>Must be <code>edge</code> — enables the latest features; other values deprecated</td></tr>
+            <tr><td><code>data-sap-ui-resourceroots</code></td><td>Maps a module Id prefix to an app-specific folder (see Unit 2)</td></tr>
+            <tr><td><code>data-sap-ui-async</code></td><td>Loads modules & library-preload files asynchronously</td></tr>
+            <tr><td><code>data-sap-ui-onInit</code></td><td>Module (prefixed with <code>module:</code>) to run after initialization</td></tr>
+          </tbody>
+        </table>
+
+        <div class="callout callout-orange">
+          <span class="icon">⚠️</span>
+          <div class="text"><strong>Exam tip:</strong> <code>compatVersion</code> must always be set to <code>edge</code> — this is required to enable complex/expression binding syntax used throughout later units.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quiz-section">
+      <h3>🧠 Unit 1 Quiz — Check Your Understanding</h3>
+      <div class="quiz-q">
+        <div class="q-text">Q1: What kind of dev space is needed to develop SAPUI5/Fiori applications in BAS?</div>
+        <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+        <div class="answer-reveal">✅ SAP Fiori dev space</div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">Q2: What is the standard bootstrap file recommended for typical use cases?</div>
+        <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+        <div class="answer-reveal">✅ sap-ui-core.js</div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">Q3: Which npm preview option simulates an OData back end without a live connection?</div>
+        <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+        <div class="answer-reveal">✅ start-mock (start-noflp runs the plain index.html without a mock server or FLP sandbox)</div>
+      </div>
+    </div>
+
+    <div class="key-takeaways">
+      <h3>🎯 Unit 1 Key Takeaways</h3>
+      <ul>
+        <li>SAP Fiori dev space in BAS = templates + CLI + code completion for Fiori apps</li>
+        <li>start-noflp = plain HTML preview · start-mock = simulated OData back end</li>
+        <li>Bootstrap file: <code style="color:#93c5fd">sap-ui-core.js</code>, loaded locally or from a CDN</li>
+        <li>Always set <code style="color:#93c5fd">data-sap-ui-compatVersion="edge"</code></li>
+        <li>Config options use the <code style="color:#93c5fd">data-sap-ui-*</code> attribute prefix on the bootstrap script</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ═══════════════ UNIT 2 ═══════════════ -->
+  <section class="unit" id="unit-2">
+    <div class="unit-header">
+      <div class="tag">UNIT 2 · APP STRUCTURE</div>
+      <h2>🧩 Modularizing & Structuring Apps</h2>
+      <p>Split code into modules with sap.ui.define, build XML views with MVC controllers, and encapsulate the whole app as a reusable Component.</p>
+      <div class="lessons-count">
+        <div class="lc-item"><div class="lc-dot"></div>Lessons 4–11</div>
+        <div class="lc-item"><div class="lc-dot" style="background:#93c5fd"></div>Modules · Views · Controllers · Components · Quiz</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="icon" style="background:#eff6ff">📦</div>
+        <h3>Modularization — sap.ui.define</h3>
+        <span class="badge badge-blue" style="margin-left:auto">Lesson 4</span>
+      </div>
+      <div class="card-body">
+        <p style="font-size:13px;line-height:1.8;margin-bottom:14px;">Instead of one large bundle, SAPUI5 apps are split into <strong>modules</strong> loaded on demand. A module is defined with <code>sap.ui.define</code>, whose dependencies array lists the module names it needs (control class dots become slashes, e.g. <code>sap.m.Text</code> → <code>sap/m/Text</code>).</p>
+
+        <img class="lesson-img" src="./developing-uis-with-sapui5-1/images/d3a9d6a85eed2755.png" alt="Simple module definition">
+        <p class="img-caption">↑ A module's factory function receives one parameter per dependency, in the same order</p>
+
+        <pre><code>sap.ui.define(["sap/m/Text"], function (Text) {
+  "use strict";
+  new Text({ text: "Hello World" }).placeAt("content");
+});</code></pre>
+
+        <h4 style="margin:16px 0 10px;font-size:14px;">Loading Configuration Options</h4>
+        <table class="tbl">
+          <thead><tr><th>Option</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>resourceroots</code></td><td>Maps a module Id prefix (e.g. sap.training.exc) to a folder — lets SAPUI5 find app-specific modules</td></tr>
+            <tr><td><code>async</code></td><td>Loads single modules & library-preload files asynchronously</td></tr>
+            <tr><td><code>onInit</code></td><td>Runs a <code>module:</code>-prefixed module after framework init</td></tr>
+          </tbody>
+        </table>
+
+        <div class="callout callout-blue">
+          <span class="icon">💡</span>
+          <div class="text"><strong>"use strict"</strong> (ECMAScript 5) inside the factory function catches coding problems early — e.g. using variables before declaration. Good practice in every module.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="icon" style="background:#fef3c7">🎨</div>
+        <h3>MVC: XML Views & Controllers</h3>
+        <span class="badge badge-blue" style="margin-left:auto">Lessons 6–7</span>
+      </div>
+      <div class="card-body">
+        <p style="font-size:13px;line-height:1.8;margin-bottom:14px;">MVC separates presentation from interaction. SAPUI5 supports XML, JSON, and Typed views — <strong>XML views are recommended</strong> because they cleanly separate UI definition (view) from logic (controller).</p>
+        <img class="lesson-img" src="./developing-uis-with-sapui5-1/images/abef5557dffe0622.png" alt="Predefined view types">
+        <p class="img-caption">↑ XML view, JSON view, Typed view — XML is the course standard</p>
+
+        <pre><code>&lt;mvc:View
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  controllerName="sap.training.exc.controller.App"&gt;
+
+  &lt;Button text="Say Hello" press=".onSayHello"/&gt;
+
+&lt;/mvc:View&gt;</code></pre>
+
+        <div class="concept-grid">
+          <div class="concept-card">
+            <h4>📛 View Naming</h4>
+            <p>File <code>App.view.xml</code> in the view folder + resourceroots prefix → module name <code>sap.training.exc.view.App</code>.</p>
+          </div>
+          <div class="concept-card">
+            <h4>🏗️ Instantiation</h4>
+            <p><code>XMLView.create({id, viewName})</code> loads asynchronously and returns a Promise resolving with the view instance.</p>
+          </div>
+          <div class="concept-card">
+            <h4>🎮 controllerName</h4>
+            <p>Attribute on &lt;View&gt; resolves to <code>&lt;prefix&gt;.controller.&lt;Name&gt;.controller.js</code>.</p>
+          </div>
+          <div class="concept-card">
+            <h4>⚡ Event Handlers</h4>
+            <p>A dot-prefixed attribute value (e.g. <code>press=".onSayHello"</code>) calls that method on the controller.</p>
+          </div>
+        </div>
+
+        <pre><code>sap.ui.define([
+  "sap/ui/core/mvc/Controller",
+  "sap/m/MessageBox"
+], function (Controller, MessageBox) {
+  "use strict";
+  return Controller.extend("sap.training.exc.controller.App", {
+    onSayHello: function () {
+      MessageBox.information("Hello World");
+    }
+  });
+});</code></pre>
+
+        <div class="callout callout-orange">
+          <span class="icon">⚠️</span>
+          <div class="text">View controllers extend <code>sap.ui.core.mvc.Controller</code>. The lifecycle hook <strong>onInit</strong> runs once per view instance after controls are created — the right place for setup like binding a model.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="icon" style="background:#dcfce7">🏗️</div>
+        <h3>Components — Structuring the Whole App</h3>
+        <span class="badge badge-blue" style="margin-left:auto">Lessons 9–10</span>
+      </div>
+      <div class="card-body">
+        <img class="lesson-img" src="./developing-uis-with-sapui5-1/images/d1ce55a75b327a80.png" alt="Component structure">
+        <p class="img-caption">↑ Component.js (controller) + manifest.json (descriptor) form a Component</p>
+
+        <table class="tbl">
+          <thead><tr><th>Type</th><th>Class</th><th>Has UI?</th></tr></thead>
+          <tbody>
+            <tr><td>Faceless component</td><td><code>sap.ui.core.Component</code></td><td>No — e.g. backend data service</td></tr>
+            <tr><td>UI component</td><td><code>sap.ui.core.UIComponent</code></td><td>Yes — screen area + rendering</td></tr>
+          </tbody>
+        </table>
+
+        <h4 style="margin:16px 0 10px;font-size:14px;">manifest.json Namespaces</h4>
+        <table class="tbl">
+          <thead><tr><th>Namespace</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>sap.app</code></td><td>App-specific attributes: <code>id</code> (must match Component.js namespace), title, description</td></tr>
+            <tr><td><code>sap.ui</code></td><td>UI-specific attributes</td></tr>
+            <tr><td><code>sap.ui5</code></td><td>SAPUI5-specific: dependencies/libs, minUI5Version, rootView, routing, models</td></tr>
+          </tbody>
+        </table>
+
+        <div class="callout callout-blue">
+          <span class="icon">💡</span>
+          <div class="text">Render a UI component only via <strong>sap/ui/core/ComponentContainer</strong> (never <code>placeAt</code> directly). Use <code>manifest: true</code> for "manifest first" loading — descriptor loads before the component controller, improving startup performance.</div>
+        </div>
+
+        <h4 style="margin:16px 0 10px;font-size:14px;">Declarative API — Embed a Component in HTML</h4>
+        <img class="lesson-img" src="./developing-uis-with-sapui5-1/images/b4adb26e077b4f02.png" alt="Declarative API">
+        <p class="img-caption">↑ data-sap-ui-component marks the container DOM element</p>
+
+        <pre><code>&lt;div
+    data-sap-ui-component
+    data-id="container"
+    data-name="sap.training.exc"
+    data-settings='{"id" : "sap.training.exc"}'
+&gt;&lt;/div&gt;</code></pre>
+        <div class="callout callout-green">
+          <span class="icon">✅</span>
+          <div class="text">Enable this with <code>data-sap-ui-onInit="module:sap/ui/core/ComponentSupport"</code> on the bootstrap script — <code>ComponentSupport.run()</code> scans the DOM for <code>data-sap-ui-component</code> elements and inserts a ComponentContainer automatically.</div>
+        </div>
+
+        <img class="lesson-img" src="./developing-uis-with-sapui5-1/images/d923eee945d00896.png" alt="Typical SAPUI5 app structure">
+        <p class="img-caption">↑ Typical control tree: Shell → App (pages) → Page views, wired together via the router</p>
+      </div>
+    </div>
+
+    <div class="quiz-section">
+      <h3>🧠 Unit 2 Quiz</h3>
+      <div class="quiz-q">
+        <div class="q-text">Q1: Which method defines an SAPUI5 module?</div>
+        <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+        <div class="answer-reveal">✅ sap.ui.define</div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">Q2: Which view type does SAP recommend, and why?</div>
+        <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+        <div class="answer-reveal">✅ XML view — enforces clear separation of UI definition from application logic (controller)</div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">Q3: Which lifecycle hook performs initial setup on a view controller?</div>
+        <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+        <div class="answer-reveal">✅ onInit</div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">Q4: In which file is the component controller implemented, and which control embeds a UI component in the control tree?</div>
+        <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+        <div class="answer-reveal">✅ Component.js — embedded via sap.ui.core.ComponentContainer</div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">Q5: What data attribute marks a DOM element for the declarative Component API?</div>
+        <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+        <div class="answer-reveal">✅ data-sap-ui-component (via the sap/ui/core/ComponentSupport module)</div>
+      </div>
+    </div>
+
+    <div class="key-takeaways">
+      <h3>🎯 Unit 2 Key Takeaways</h3>
+      <ul>
+        <li>Modules: <code style="color:#93c5fd">sap.ui.define([deps], factory)</code> — dependency array order = factory parameter order</li>
+        <li>XML views recommended · file suffix <code style="color:#93c5fd">.view.xml</code> · controller suffix <code style="color:#93c5fd">.controller.js</code></li>
+        <li>Event handlers: dot-prefixed attribute value calls a controller method</li>
+        <li>Component = Component.js (controller, mandatory) + manifest.json (descriptor, recommended)</li>
+        <li>sap.app (app info) · sap.ui (UI info) · sap.ui5 (SAPUI5 config, dependencies, routing, models)</li>
+        <li>UI components render only via ComponentContainer; declarative API needs ComponentSupport + data-sap-ui-component</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ═══════════════ UNIT 3 ═══════════════ -->
+  <section class="unit" id="unit-3">
+    <div class="unit-header">
+      <div class="tag">UNIT 3 · UI CONTROLS</div>
+      <h2>🖼️ Building the UI: Controls & Fragments</h2>
+      <p>Compose screens with Shell, App, Page, Panel and SimpleForm; adapt to device content density; and reuse dialogs and popups via XML fragments.</p>
+      <div class="lessons-count">
+        <div class="lc-item"><div class="lc-dot"></div>Lessons 12–16</div>
+        <div class="lc-item"><div class="lc-dot" style="background:#93c5fd"></div>Layout Controls · Densities · Fragments · Quiz</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="icon" style="background:#eff6ff">📐</div>
+        <h3>Core Layout Controls</h3>
+        <span class="badge badge-blue" style="margin-left:auto">Lesson 12</span>
+      </div>
+      <div class="card-body">
+        <div class="concept-grid">
+          <div class="concept-card">
+            <h4>📝 SimpleForm</h4>
+            <p>Recommended layout: <code>ColumnLayout</code>. Content: Title/Toolbar starts a group, Label starts a row, then input controls.</p>
+          </div>
+          <div class="concept-card">
+            <h4>🗂️ Panel</h4>
+            <p>Title bar + optional header/info toolbar + content. <code>expandable</code>/<code>expanded</code> control collapse behavior.</p>
+          </div>
+          <div class="concept-card">
+            <h4>📄 Page</h4>
+            <p>Header + content + footer. <code>showNavButton</code> fires <code>navButtonPress</code>. Often the view's root control.</p>
+          </div>
+          <div class="concept-card">
+            <h4>📱 App / Shell</h4>
+            <p>App = navigation container for Pages/Views (pages aggregation). Shell wraps App to add desktop margins & custom branding.</p>
+          </div>
+        </div>
+
+        <img class="lesson-img" src="./developing-uis-with-sapui5-1/images/d923eee945d00896.png" alt="SAPUI5 app structure diagram">
+        <p class="img-caption">↑ App.view.xml (Shell → App) statically/dynamically embeds page views in the pages aggregation</p>
+
+        <pre><code>&lt;mvc:View displayBlock="true" ...&gt;
+  &lt;Shell&gt;
+    &lt;App&gt;
+      &lt;pages&gt;
+        &lt;mvc:XMLView viewName="sap.training.exc.view.Overview"/&gt;
+      &lt;/pages&gt;
+    &lt;/App&gt;
+  &lt;/Shell&gt;
+&lt;/mvc:View&gt;</code></pre>
+
+        <div class="callout callout-orange">
+          <span class="icon">⚠️</span>
+          <div class="text"><code>displayBlock="true"</code> on the root &lt;mvc:View&gt; prevents unwanted vertical scrollbars on 100%-height views.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="icon" style="background:#fef3c7">📏</div>
+        <h3>Content Densities & Device Adaptation</h3>
+        <span class="badge badge-blue" style="margin-left:auto">Lesson 13</span>
+      </div>
+      <div class="card-body">
+        <p style="font-size:13px;line-height:1.8;margin-bottom:14px;">SAPUI5 supports <strong>Cozy</strong> (default for sap.m — larger, touch-friendly) and <strong>Compact</strong> (smaller, mouse-friendly) densities, triggered by CSS classes set high in the control tree (they cascade down).</p>
+
+        <table class="tbl">
+          <thead><tr><th>CSS Class</th><th>Density</th></tr></thead>
+          <tbody>
+            <tr><td><code>sapUiSizeCozy</code></td><td>Larger dimensions & spacing (touch)</td></tr>
+            <tr><td><code>sapUiSizeCompact</code></td><td>Smaller dimensions & spacing (mouse)</td></tr>
+          </tbody>
+        </table>
+
+        <pre><code>getContentDensityClass: function () {
+  if (!this._sContentDensityClass) {
+    if (Device.support.touch) {
+      this._sContentDensityClass = "sapUiSizeCozy";
+    } else {
+      this._sContentDensityClass = "sapUiSizeCompact";
+    }
+  }
+  return this._sContentDensityClass;
+}
+
+// in the view controller's onInit:
+this.getView().addStyleClass(this.getOwnerComponent().getContentDensityClass());</code></pre>
+
+        <div class="callout callout-blue">
+          <span class="icon">📋</span>
+          <div class="text">The mandatory <code>contentDensities</code> object in the <code>sap.ui5</code> namespace of manifest.json declares which densities the app supports. The <strong>FLP</strong> reads this and sets the body's density class automatically when running there.</div>
+        </div>
+
+        <h4 style="margin:16px 0 10px;font-size:14px;">Device-Specific CSS Classes</h4>
+        <div class="tool-grid">
+          <div class="tool-card"><div class="tc-icon">🖥️</div><h4>Desktop</h4><span class="tc-code">sapUiHideOnDesktop</span><p>sapUiVisibleOnlyOnDesktop</p></div>
+          <div class="tool-card"><div class="tc-icon">📱</div><h4>Tablet</h4><span class="tc-code">sapUiHideOnTablet</span><p>sapUiVisibleOnlyOnTablet</p></div>
+          <div class="tool-card"><div class="tc-icon">📞</div><h4>Phone</h4><span class="tc-code">sapUiHideOnPhone</span><p>sapUiVisibleOnlyOnPhone</p></div>
+          <div class="tool-card"><div class="tc-icon">↔️</div><h4>Responsive margin</h4><span class="tc-code">sapUiResponsiveMargin</span><p>Adapts margins to screen width</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="icon" style="background:#dcfce7">🧩</div>
+        <h3>Fragments — Reusable UI Parts & Dialogs</h3>
+        <span class="badge badge-blue" style="margin-left:auto">Lesson 15</span>
+      </div>
+      <div class="card-body">
+        <p style="font-size:13px;line-height:1.8;margin-bottom:14px;">Fragments solve the reuse problem without the overhead of a new control (dev effort) or a new view (runtime overhead). An XML fragment (<code>*.fragment.xml</code>) looks like a view but has <strong>no &lt;View&gt; root tag</strong> — instead <code>&lt;core:FragmentDefinition&gt;</code> if there's more than one root control.</p>
+
+        <img class="lesson-img" src="./developing-uis-with-sapui5-1/images/4bb6e46fae1a670e.png" alt="Simple XML fragment">
+        <p class="img-caption">↑ A fragment's content is inserted directly where it is placed — no HTML representation of its own</p>
+
+        <pre><code>&lt;core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"&gt;
+  &lt;Dialog id="dialog" title="Info" type="Message"&gt;
+    &lt;content&gt;
+      &lt;Text text="Customer data is later saved via an OData service."/&gt;
+    &lt;/content&gt;
+    &lt;beginButton&gt;
+      &lt;Button text="Ok" press=".onCloseDialog"/&gt;
+    &lt;/beginButton&gt;
+  &lt;/Dialog&gt;
+&lt;/core:FragmentDefinition&gt;</code></pre>
+
+        <div class="two-col">
+          <div class="callout callout-blue">
+            <span class="icon">📎</span>
+            <div class="text"><strong>In an XML view</strong> — <code>&lt;core:Fragment fragmentName="..." type="XML"/&gt;</code>, the view's controller becomes the fragment's controller automatically.</div>
+          </div>
+          <div class="callout callout-blue">
+            <span class="icon">⚙️</span>
+            <div class="text"><strong>Via API</strong> — <code>this.loadFragment({name})</code> in a view controller, or <code>sap.ui.core.Fragment.load()</code> outside a controller.</div>
+          </div>
+        </div>
+
+        <pre><code>onSave: function () {
+  if (!this.pDialog) {
+    this.pDialog = this.loadFragment({
+      name: "sap.training.exc.view.Dialog"
+    }).then(function (oDialog) {
+      syncStyleClass(this.getOwnerComponent().getContentDensityClass(), this.getView(), oDialog);
+      return oDialog;
+    }.bind(this));
+  }
+  this.pDialog.then(function (oDialog) { oDialog.open(); });
+}</code></pre>
+
+        <div class="callout callout-orange">
+          <span class="icon">⚠️</span>
+          <div class="text">Dialogs render in the DOM's <strong>static area</strong>, outside the view — so the view's content-density class is <em>not</em> inherited automatically. Forward it manually with <code>sap/ui/core/syncStyleClass</code>.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quiz-section">
+      <h3>🧠 Unit 3 Quiz</h3>
+      <div class="quiz-q">
+        <div class="q-text">Q1: What is the typical control-tree hierarchy of an SAPUI5 app?</div>
+        <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+        <div class="answer-reveal">✅ ComponentContainer → Shell → App → XMLView → Page</div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">Q2: Which two SAPUI5 CSS classes trigger content densities?</div>
+        <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+        <div class="answer-reveal">✅ sapUiSizeCozy and sapUiSizeCompact</div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">Q3: Name the three fragment types SAPUI5 provides, and the method to instantiate one in a view controller.</div>
+        <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+        <div class="answer-reveal">✅ XML, JS, and HTML fragments. Instantiate via this.loadFragment()</div>
+      </div>
+    </div>
+
+    <div class="key-takeaways">
+      <h3>🎯 Unit 3 Key Takeaways</h3>
+      <ul>
+        <li>SimpleForm (ColumnLayout) · Panel · Page · App/Shell are the core layout building blocks</li>
+        <li>Content density: Cozy (touch, default sap.m) vs Compact (mouse) — set high, cascades down</li>
+        <li>manifest.json <code style="color:#93c5fd">sap.ui5/contentDensities</code> tells the FLP which densities are supported</li>
+        <li>Fragments (*.fragment.xml) reuse UI without new-control or new-view overhead</li>
+        <li>Dialogs are fragments whose root is sap.m.Dialog — loaded via loadFragment(), density synced via syncStyleClass</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ═══════════════ UNIT 4 ═══════════════ -->
+  <section class="unit" id="unit-4">
+    <div class="unit-header">
+      <div class="tag">UNIT 4 · DATA BINDING</div>
+      <h2>🔗 Models & Data Binding</h2>
+      <p>Bind UI controls to a JSON model via property, aggregation, and element binding; format and validate data with types and formatters; sort, filter and use expression binding.</p>
+      <div class="lessons-count">
+        <div class="lc-item"><div class="lc-dot"></div>Lessons 17–23</div>
+        <div class="lc-item"><div class="lc-dot" style="background:#93c5fd"></div>JSON Model · Binding Types · Data Types · Sort/Filter · Quiz</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="icon" style="background:#eff6ff">📊</div>
+        <h3>JSON Model & Property Binding</h3>
+        <span class="badge badge-blue" style="margin-left:auto">Lesson 17</span>
+      </div>
+      <div class="card-body">
+        <p style="font-size:13px;line-height:1.8;margin-bottom:14px;">A model holds data and provides methods to get/set it. The <strong>JSON model</strong> (<code>sap.ui.model.json.JSONModel</code>) is the simplest, most common model type used in this course alongside the resource model and OData V4 model.</p>
+
+        <pre><code>var oModel = new JSONModel();
+this.getView().setModel(oModel, "customer");   // named model
+oModel.setData({ CustomerName: "SAP SE", City: "Walldorf" });
+oModel.loadData("model/data.json");             // GET + populate
+var oData = oModel.getData();</code></pre>
+
+        <div class="callout callout-blue">
+          <span class="icon">🔤</span>
+          <div class="text">Binding syntax: <code>{path/to/data}</code> for the default (unnamed) model, or <code>{modelName&gt;/path}</code> for a named model. Absolute paths start with <code>/</code>; relative paths resolve against the control's binding context.</div>
+        </div>
+
+        <pre><code>&lt;Input value="{customer&gt;/CustomerName}"/&gt;
+&lt;Text text="{customer&gt;/CustomerName}"/&gt;</code></pre>
+
+        <table class="tbl">
+          <thead><tr><th>Binding Mode</th><th>Behavior</th><th>JSON Model Default?</th></tr></thead>
+          <tbody>
+            <tr><td>One-way</td><td>Model → View only</td><td></td></tr>
+            <tr><td>Two-way</td><td>Model ↔ View, both directions sync</td><td>✅ default</td></tr>
+            <tr><td>One-time</td><td>View reads model once, no further updates</td><td></td></tr>
+          </tbody>
+        </table>
+        <img class="lesson-img" src="./developing-uis-with-sapui5-1/images/0a98f0d04184050f.png" alt="Supported binding modes per model type">
+        <p class="img-caption">↑ Supported & default binding modes across JSON, XML, Resource, OData V2 and OData V4 models</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="icon" style="background:#fef3c7">🔀</div>
+        <h3>Aggregation Binding & Element Binding</h3>
+        <span class="badge badge-blue" style="margin-left:auto">Lessons 18–19</span>
+      </div>
+      <div class="card-body">
+        <p style="font-size:13px;line-height:1.8;margin-bottom:14px;">Besides property binding, SAPUI5 has two more binding types: <strong>aggregation binding</strong> (lists → tables) and <strong>element binding</strong> (one entity → detail view).</p>
+
+        <img class="lesson-img" src="./developing-uis-with-sapui5-1/images/a8ab2782899debd1.png" alt="JSON array mapped to a table via a template control">
+        <p class="img-caption">↑ items="{/Customers}" clones a template row (ColumnListItem) once per array element</p>
+
+        <pre><code>&lt;Table items="{/Customers}"&gt;
+  &lt;columns&gt;...&lt;/columns&gt;
+  &lt;items&gt;
+    &lt;ColumnListItem&gt;
+      &lt;cells&gt;
+        &lt;Text text="{CustomerName}"/&gt;   &lt;!-- relative to array element --&gt;
+      &lt;/cells&gt;
+    &lt;/ColumnListItem&gt;
+  &lt;/items&gt;
+&lt;/Table&gt;</code></pre>
+
+        <img class="lesson-img" src="./developing-uis-with-sapui5-1/images/ec14872b54a66eea.png" alt="List-detail element binding scenario">
+        <p class="img-caption">↑ Selecting a customer sets the booking table's binding context via element binding</p>
+
+        <div class="callout callout-green">
+          <span class="icon">🔗</span>
+          <div class="text"><strong>Element binding</strong>: a relative binding (e.g. <code>items="{_Bookings}"</code>) has no data until it gets a context. On <code>selectionChange</code>, read <code>oEvent.getParameter("listItem").getBindingContext()</code> and call <code>setBindingContext()</code> on the detail table.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="icon" style="background:#dcfce7">🔠</div>
+        <h3>Data Types & Formatter Functions</h3>
+        <span class="badge badge-blue" style="margin-left:auto">Lessons 20–21</span>
+      </div>
+      <div class="card-body">
+        <p style="font-size:13px;line-height:1.8;margin-bottom:14px;">Both <strong>data types</strong> and <strong>formatter functions</strong> convert model data for display — but only data types can <em>parse and validate</em> user input (two-way); formatters are one-way only.</p>
+
+        <table class="tbl">
+          <thead><tr><th>Simple Type</th><th>Represents</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td><code>sap.ui.model.type.Integer</code></td><td>Whole number</td><td>constraints: minimum, maximum</td></tr>
+            <tr><td><code>sap.ui.model.type.Date</code></td><td>Date, no time</td><td>formatOptions: pattern/style; constraints: min/max</td></tr>
+            <tr><td><code>sap.ui.model.type.Currency</code></td><td>Composite: amount + currency</td><td>parts array; showMeasure hides the code</td></tr>
+          </tbody>
+        </table>
+
+        <img class="lesson-img" src="./developing-uis-with-sapui5-1/images/445010b92af0e8ef.png" alt="Integer data type constraints">
+        <p class="img-caption">↑ All simple types inherit from sap.ui.model.SimpleType — custom types override formatValue/parseValue/validateValue</p>
+
+        <pre><code>// Formatter module (formatter.js)
+classText: function (sKey) {
+  return sKey === "Y" ? "Economy Class" : sKey;
+}
+
+// XML view
+&lt;core:require="{formatter: 'sap/training/exc/model/formatter'}"&gt;
+&lt;Text text="{path:'Class', formatter:'formatter.classText'}"/&gt;</code></pre>
+
+        <div class="callout callout-orange">
+          <span class="icon">⚠️</span>
+          <div class="text">Using a <strong>formatter function</strong> on a binding automatically forces it to one-way — you cannot use a formatter in a two-way scenario. Invalid parse/validate results in a value that is <em>not</em> transferred to the model; use the <strong>Message Manager</strong> to surface errors on the UI.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="icon" style="background:#fef3c7">🔍</div>
+        <h3>Sorting, Filtering & Expression Binding</h3>
+        <span class="badge badge-blue" style="margin-left:auto">Lessons 22–23</span>
+      </div>
+      <div class="card-body">
+        <pre><code>// Filter
+var oFilter = new Filter("CustomerName", FilterOperator.Contains, "SAP");
+this.byId("customerTable").getBinding("items").filter([oFilter]);
+
+// Sort
+var oSorter = new Sorter("City", true);  // true = descending
+this.byId("customerTable").getBinding("items").sort([oSorter]);</code></pre>
+
+        <table class="tbl">
+          <thead><tr><th>API</th><th>Class</th></tr></thead>
+          <tbody>
+            <tr><td>Filter data manually</td><td><code>sap.ui.model.Filter</code> + <code>binding.filter()</code></td></tr>
+            <tr><td>Sort data manually</td><td><code>sap.ui.model.Sorter</code> + <code>binding.sort()</code></td></tr>
+          </tbody>
+        </table>
+
+        <div class="callout callout-blue">
+          <span class="icon">🧮</span>
+          <div class="text"><strong>Expression binding</strong> replaces trivial formatter functions inline: <code>{= expr}</code> (one-way, recalculates on model change) or <code>{:= expr}</code> (one-time). Embed model values with <code>${binding}</code>. Requires <code>compatVersion="edge"</code>.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quiz-section">
+      <h3>🧠 Unit 4 Quiz</h3>
+      <div class="quiz-q">
+        <div class="q-text">Q1: Which three binding types does SAPUI5 provide?</div>
+        <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+        <div class="answer-reveal">✅ Property binding, Aggregation binding, Element binding</div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">Q2: What is the default binding mode of a JSON model?</div>
+        <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+        <div class="answer-reveal">✅ Two-way</div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">Q3: What three things do simple data types provide?</div>
+        <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+        <div class="answer-reveal">✅ Formatting model data for the UI, parsing user input, and validating user input</div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">Q4: Which property in the complex binding syntax specifies a formatter function?</div>
+        <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+        <div class="answer-reveal">✅ formatter</div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">Q5: Which bootstrap attribute enables expression binding (including one-way/one-time)?</div>
+        <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+        <div class="answer-reveal">✅ data-sap-ui-compatVersion="edge"</div>
+      </div>
+    </div>
+
+    <div class="key-takeaways">
+      <h3>🎯 Unit 4 Key Takeaways</h3>
+      <ul>
+        <li>JSON model: setData/loadData/getData; setModel(model, name) assigns it to the UI</li>
+        <li>3 binding types: property, aggregation (template + items), element (context via selectionChange)</li>
+        <li>Data types (Integer/Date/Currency) parse+validate+format; formatters only format (one-way)</li>
+        <li>Filter/Sorter objects + binding.filter()/.sort() for manual API-driven sort & filter</li>
+        <li>Expression binding <code style="color:#93c5fd">{= expr}</code> / <code style="color:#93c5fd">{:= expr}</code> replaces trivial formatters</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ═══════════════ UNIT 5 ═══════════════ -->
+  <section class="unit" id="unit-5">
+    <div class="unit-header">
+      <div class="tag">UNIT 5 · I18N & RESPONSIVE</div>
+      <h2>📲 Devices & Localization</h2>
+      <p>Adapt to device type via the Device model and responsive tables, then internationalize the UI with resource bundles and the resource model.</p>
+      <div class="lessons-count">
+        <div class="lc-item"><div class="lc-dot"></div>Lessons 24–27</div>
+        <div class="lc-item"><div class="lc-dot" style="background:#93c5fd"></div>Device Model · Responsive Table · i18n · Quiz</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="icon" style="background:#eff6ff">📶</div>
+        <h3>Responsive Controls & the Device Model</h3>
+        <span class="badge badge-blue" style="margin-left:auto">Lesson 24</span>
+      </div>
+      <div class="card-body">
+        <p style="font-size:13px;line-height:1.8;margin-bottom:14px;">Some controls (<code>sap.m.SplitApp</code>, <code>ResponsivePopover</code>, <code>OverflowToolbar</code>, <code>PullToRefresh</code>) adapt automatically. <code>sap.m.Table</code> ("Responsive Table") needs explicit column configuration.</p>
+
+        <img class="lesson-img" src="./developing-uis-with-sapui5-1/images/341bc58676c04799.png" alt="Responsive table columns">
+        <p class="img-caption">↑ minScreenWidth hides a column below a breakpoint; demandPopin shows it as a pop-in row instead</p>
+
+        <pre><code>&lt;columns&gt;
+  &lt;Column&gt;&lt;Text text="Customer Name"/&gt;&lt;/Column&gt;
+  &lt;Column minScreenWidth="Tablet"&gt;&lt;Text text="City"/&gt;&lt;/Column&gt;
+  &lt;Column minScreenWidth="Tablet" demandPopin="true"&gt;&lt;Text text="Email"/&gt;&lt;/Column&gt;
+&lt;/columns&gt;</code></pre>
+
+        <img class="lesson-img" src="./developing-uis-with-sapui5-1/images/0f32e6944caab345.png" alt="Device model creation in Component.js">
+        <p class="img-caption">↑ A device model wraps sap.ui.Device as a read-only (OneWay) named JSON model</p>
+
+        <div class="callout callout-blue">
+          <span class="icon">📡</span>
+          <div class="text">The <strong>Device API</strong> (<code>sap.ui.Device</code>) exposes OS, browser, screen size, orientation and touch support. Wrap it as a JSON model (name: <code>device</code>) to bind properties like <code>{device&gt;/system/desktop}</code> — e.g. to hide a back button on desktop.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="icon" style="background:#dcfce7">🌍</div>
+        <h3>Localization — Resource Bundles & Resource Model</h3>
+        <span class="badge badge-blue" style="margin-left:auto">Lesson 26</span>
+      </div>
+      <div class="card-body">
+        <p style="font-size:13px;line-height:1.8;margin-bottom:14px;">Translatable texts live in the <code>i18n</code> folder as <code>.properties</code> files, one per locale (e.g. <code>i18n_en.properties</code>, <code>i18n_de.properties</code>) plus a raw fallback <code>i18n.properties</code>.</p>
+
+        <img class="lesson-img" src="./developing-uis-with-sapui5-1/images/ff62e897eb548fb0.png" alt="i18n properties files">
+        <p class="img-caption">↑ Same keys, language-dependent values, across locale-specific files</p>
+
+        <pre><code>"i18n": {
+  "type": "sap.ui.model.resource.ResourceModel",
+  "settings": { "bundleName": "sap.training.exc.i18n.i18n" }
+}</code></pre>
+
+        <div class="callout callout-blue">
+          <span class="icon">🔗</span>
+          <div class="text">Resource model bindings have <strong>no leading slash</strong> — the key itself is the path: <code>{i18n&gt;cityLabelText}</code>. Use <code>sap/base/strings/formatMessage</code> to replace <code>{0}</code>-style placeholders with dynamic values.</div>
+        </div>
+
+        <h4 style="margin:16px 0 10px;font-size:14px;">Fallback Chain (locale de_DE, defaults)</h4>
+        <div class="timeline">
+          <div class="tl-item"><div class="tl-dot">1</div><div class="tl-content"><h4>i18n_de_DE.properties</h4><p>Most specific — region + language</p></div></div>
+          <div class="tl-item"><div class="tl-dot">2</div><div class="tl-content"><h4>i18n_de.properties</h4><p>Language only</p></div></div>
+          <div class="tl-item"><div class="tl-dot">3</div><div class="tl-content"><h4>i18n_en.properties</h4><p>fallbackLocale default = "en"</p></div></div>
+          <div class="tl-item"><div class="tl-dot" style="background:var(--green)">4</div><div class="tl-content"><h4>i18n.properties</h4><p>Raw file — final fallback</p></div></div>
+        </div>
+        <div class="callout callout-orange">
+          <span class="icon">⚠️</span>
+          <div class="text">Set <code>supportedLocales: [""]</code> and <code>fallbackLocale: ""</code> to force only the raw file (no 404s from probing locale variants). The <code>sap/base/i18n/ResourceBundle</code> module's <code>getText(key, [args])</code> is the imperative alternative to resource-model binding.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quiz-section">
+      <h3>🧠 Unit 5 Quiz</h3>
+      <div class="quiz-q">
+        <div class="q-text">Q1: Which sap.m.Table column property hides a column below a certain screen width, and which one shows it as a pop-in instead of hiding it?</div>
+        <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+        <div class="answer-reveal">✅ minScreenWidth hides it; adding demandPopin="true" shows it as a pop-in row</div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">Q2: What two options does SAPUI5 provide to access texts from a resource bundle?</div>
+        <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+        <div class="answer-reveal">✅ Data binding via a Resource Model, or the sap/base/i18n/ResourceBundle module's getText() API</div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">Q3: Which parameter passes the SAPUI5 module name of the base .properties file to a ResourceModel?</div>
+        <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+        <div class="answer-reveal">✅ bundleName</div>
+      </div>
+    </div>
+
+    <div class="key-takeaways">
+      <h3>🎯 Unit 5 Key Takeaways</h3>
+      <ul>
+        <li>Responsive Table: minScreenWidth (hide) + demandPopin (pop-in instead of hide)</li>
+        <li>Device model wraps sap.ui.Device as a OneWay JSON model, named "device"</li>
+        <li>i18n files in the i18n folder; resource-model bindings have no leading slash</li>
+        <li>Fallback chain: locale_REGION → locale → fallbackLocale (default "en") → raw file</li>
+        <li>sap/base/strings/formatMessage replaces {0}-style placeholders in bound text</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ═══════════════ UNIT 6 ═══════════════ -->
+  <section class="unit" id="unit-6">
+    <div class="unit-header">
+      <div class="tag">UNIT 6 · ODATA V4</div>
+      <h2>🗄️ OData Model</h2>
+      <p>Consume an OData V4 service via the SAPUI5 OData model — bindings, generated requests, sorting/filtering, batch Group IDs, and creating new entities.</p>
+      <div class="lessons-count">
+        <div class="lc-item"><div class="lc-dot"></div>Lessons 28–30</div>
+        <div class="lc-item"><div class="lc-dot" style="background:#93c5fd"></div>Model & Bindings · Batch & Create · Quiz</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="icon" style="background:#eff6ff">🔌</div>
+        <h3>OData V4 Model Instantiation & Bindings</h3>
+        <span class="badge badge-blue" style="margin-left:auto">Lesson 28</span>
+      </div>
+      <div class="card-body">
+        <p style="font-size:13px;line-height:1.8;margin-bottom:14px;">The OData V4 model (<code>sap.ui.model.odata.v4.ODataModel</code>) supports read, create, delete, two-way property updates, operation execution, batching, and server-side sort/filter.</p>
+
+        <pre><code>"": {
+  "dataSource": "mainService",
+  "settings": {
+    "synchronizationMode": "None",
+    "operationMode": "Server",
+    "earlyRequests": true,
+    "autoExpandSelect": true
+  }
+}</code></pre>
+
+        <table class="tbl">
+          <thead><tr><th>Parameter</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>synchronizationMode</code></td><td>Must be "None" — no other value supported</td></tr>
+            <tr><td><code>operationMode</code></td><td>"Server" → sort/filter applied via $filter/$orderby URL params</td></tr>
+            <tr><td><code>earlyRequests</code></td><td>Request $metadata/annotations/CSRF token as early as possible</td></tr>
+            <tr><td><code>autoExpandSelect</code></td><td>Auto-generate $select/$expand — minimal payload, only UI-bound properties</td></tr>
+          </tbody>
+        </table>
+
+        <img class="lesson-img" src="./developing-uis-with-sapui5-1/images/d8ea412615896f83.png" alt="OData V4 binding types">
+        <p class="img-caption">↑ List binding (collection), Context binding (single entity), Property binding (primitive value)</p>
+
+        <div class="callout callout-blue">
+          <span class="icon">🌐</span>
+          <div class="text">Absolute bindings (start with <code>/</code>) trigger an OData request immediately. Relative bindings are <strong>initial</strong> — no data until they inherit a context from a parent list/context binding (same pattern as element binding with JSON models).</div>
+        </div>
+
+        <h4 style="margin:16px 0 10px;font-size:14px;">Generated Request Example</h4>
+        <pre><code>GET .../UX_Customer?$skip=0&amp;$top=5&amp;$orderby=City,CustomerName&amp;$select=CustomerName,City,...
+
+// Manual filter via API
+oBinding.filter(new Filter("CustomerName", FilterOperator.Contains, "SAP"));
+// → generates $filter=contains(CustomerName,'SAP')</code></pre>
+
+        <div class="callout callout-orange">
+          <span class="icon">⚠️</span>
+          <div class="text"><code>operationMode: "Server"</code> is <strong>required</strong> for manual sort/filter via the binding API — without it, calling <code>.sort()</code>/<code>.filter()</code> raises an error.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="icon" style="background:#dcfce7">📦</div>
+        <h3>Batch Group IDs & Creating Entities</h3>
+        <span class="badge badge-blue" style="margin-left:auto">Lesson 29</span>
+      </div>
+      <div class="card-body">
+        <img class="lesson-img" src="./developing-uis-with-sapui5-1/images/58775ab112573465.png" alt="OData Group IDs">
+        <p class="img-caption">↑ $auto (default, auto-batched) · $direct (no batch) · custom Application Group IDs</p>
+
+        <table class="tbl">
+          <thead><tr><th>Group ID</th><th>Submit Mode</th><th>Behavior</th></tr></thead>
+          <tbody>
+            <tr><td><code>$auto</code> / <code>$auto.*</code></td><td>Auto</td><td>Default — batched automatically before rendering</td></tr>
+            <tr><td><code>$direct</code></td><td>Direct</td><td>Sent immediately, no batch</td></tr>
+            <tr><td>Application Group ID</td><td>API</td><td>Sent only via <code>submitBatch()</code> call — for developer-controlled batching</td></tr>
+          </tbody>
+        </table>
+
+        <pre><code>&lt;f:SimpleForm binding="{path:'/UX_Customer(...)', parameters:{$$groupId:'$direct',$$updateGroupId:'$direct'}}"&gt;</code></pre>
+
+        <h4 style="margin:16px 0 10px;font-size:14px;">Creating a New Entity</h4>
+        <pre><code>onCreateCustomer: function () {
+  var oBinding = this.byId("customerTable").getBinding("items");
+  var oContext = oBinding.create({ CustomerName: "...", City: "..." });
+  oContext.created().then(function () {
+    MessageToast.show("Customer created");
+  });
+}</code></pre>
+        <div class="callout callout-green">
+          <span class="icon">✅</span>
+          <div class="text"><code>ODataListBinding#create()</code> inserts the new entity at the top of the list and uses the binding's <strong>Update Group ID</strong> (defaults to <code>$auto</code>). <code>Context#created()</code> returns a Promise resolved once the back end confirms creation.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quiz-section">
+      <h3>🧠 Unit 6 Quiz</h3>
+      <div class="quiz-q">
+        <div class="q-text">Q1: What binding mode does the OData V4 model use by default?</div>
+        <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+        <div class="answer-reveal">✅ Two-way</div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">Q2: Which two Group IDs are predefined by SAPUI5?</div>
+        <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+        <div class="answer-reveal">✅ $auto and $direct</div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">Q3: Which OData versions does SAPUI5 currently support?</div>
+        <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+        <div class="answer-reveal">✅ OData V2 and OData V4 (V1 and V3 are not supported / V3 was skipped)</div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">Q4: Which model parameter must be set to "Server" to enable manual sort/filter via the binding API?</div>
+        <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+        <div class="answer-reveal">✅ operationMode</div>
+      </div>
+    </div>
+
+    <div class="key-takeaways">
+      <h3>🎯 Unit 6 Key Takeaways</h3>
+      <ul>
+        <li>ODataModel V4: synchronizationMode must be "None"; operationMode "Server" enables sort/filter</li>
+        <li>autoExpandSelect minimizes payload via auto-generated $select/$expand</li>
+        <li>Absolute bindings trigger requests immediately; relative bindings need a context first</li>
+        <li>Group IDs: $auto (default, batched) · $direct (no batch) · custom Application Group IDs (via submitBatch)</li>
+        <li>Create entities via ODataListBinding#create(); Context#created() resolves on back-end confirmation</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ═══════════════ UNIT 7 ═══════════════ -->
+  <section class="unit" id="unit-7">
+    <div class="unit-header">
+      <div class="tag">UNIT 7 · NAVIGATION</div>
+      <h2>🧭 Routing & Navigation</h2>
+      <p>Configure hash-based routing in manifest.json, navigate with the router, handle back navigation and invalid hashes, and pass mandatory route parameters.</p>
+      <div class="lessons-count">
+        <div class="lc-item"><div class="lc-dot"></div>Lessons 31–36</div>
+        <div class="lc-item"><div class="lc-dot" style="background:#93c5fd"></div>Routing Config · navTo · Back Nav · Parameters · Quiz</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="icon" style="background:#eff6ff">🗺️</div>
+        <h3>Routing Configuration</h3>
+        <span class="badge badge-blue" style="margin-left:auto">Lesson 31</span>
+      </div>
+      <div class="card-body">
+        <p style="font-size:13px;line-height:1.8;margin-bottom:14px;">SAPUI5 uses <strong>hash-based navigation</strong> for single-page apps — no page reload, and hashes double as bookmarks/deep links. The routing config lives in <code>sap.ui5/routing</code> of manifest.json.</p>
+
+        <img class="lesson-img" src="./developing-uis-with-sapui5-1/images/3bdc029aace43723.png" alt="Routing configuration: config, routes, targets">
+        <p class="img-caption">↑ config (defaults) → routes (name + pattern) → targets (view/component to display)</p>
+
+        <table class="tbl">
+          <thead><tr><th>Section</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>config</code></td><td>Global defaults: viewType, viewPath, routerClass, controlId/controlAggregation, async</td></tr>
+            <tr><td><code>routes</code></td><td>Name + pattern (matched against the browser hash) + target(s)</td></tr>
+            <tr><td><code>targets</code></td><td>View/component to load + where (controlId/controlAggregation)</td></tr>
+          </tbody>
+        </table>
+
+        <div class="callout callout-blue">
+          <span class="icon">📱</span>
+          <div class="text"><code>routerClass: sap.m.routing.Router</code> is optimized for mobile — it also triggers <strong>transitions</strong> (slide/flip/fade/show) during navigation, controlled via each target's <code>viewLevel</code> (navigation direction).</div>
+        </div>
+
+        <pre><code>this.getRouter().initialize();   // in Component.js init()</code></pre>
+        <div class="callout callout-orange">
+          <span class="icon">⚠️</span>
+          <div class="text">Without calling <code>initialize()</code> on the router in the component's <code>init()</code> method, the routing configuration is never activated — the current hash won't be evaluated.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="icon" style="background:#fef3c7">🧭</div>
+        <h3>Navigating with navTo & Back Navigation</h3>
+        <span class="badge badge-blue" style="margin-left:auto">Lessons 32–33</span>
+      </div>
+      <div class="card-body">
+        <img class="lesson-img" src="./developing-uis-with-sapui5-1/images/782f8e347f720c69.png" alt="Route with a hard-coded pattern">
+        <p class="img-caption">↑ A route named "detail" with the hard-coded pattern "detail" matches only hash #detail</p>
+
+        <pre><code>this.getOwnerComponent().getRouter().navTo("detail");
+// navTo(sName, oParameters?, oComponentTargetInfo?, bReplace?)</code></pre>
+
+        <table class="tbl">
+          <thead><tr><th>navTo Parameter</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td>sName</td><td>Route name to navigate to</td></tr>
+            <tr><td>oParameters</td><td>(optional) values for route parameters</td></tr>
+            <tr><td>bReplace</td><td>true = replace hash, no browser-history entry (default false)</td></tr>
+          </tbody>
+        </table>
+
+        <pre><code>onNavBack: function () {
+  var sPreviousHash = History.getInstance().getPreviousHash();
+  if (sPreviousHash !== undefined) {
+    window.history.go(-1);
+  } else {
+    this.getOwnerComponent().getRouter().navTo("overview", {}, true);
+  }
+}</code></pre>
+        <div class="callout callout-blue">
+          <span class="icon">↩️</span>
+          <div class="text">The browser's native Back button always uses browser history and can <em>exit the app</em>. A custom Back handler checks <code>sap/ui/core/routing/History#getPreviousHash()</code> — if there's no previous in-app hash, it navigates to a known route with <code>bReplace=true</code> instead of leaving the app.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="icon" style="background:#dcfce7">🚧</div>
+        <h3>Invalid Hashes & Mandatory Parameters</h3>
+        <span class="badge badge-blue" style="margin-left:auto">Lessons 34–35</span>
+      </div>
+      <div class="card-body">
+        <img class="lesson-img" src="./developing-uis-with-sapui5-1/images/3c426907de15ef82.png" alt="bypassed / notFound target configuration">
+        <p class="img-caption">↑ The bypassed property points to a notFound target shown for any unmatched hash</p>
+
+        <pre><code>"routing": {
+  "config": { "bypassed": { "target": "notFound" } },
+  "targets": {
+    "notFound": { "viewName": "NotFound", "transition": "show" }
+  }
+}</code></pre>
+
+        <img class="lesson-img" src="./developing-uis-with-sapui5-1/images/8a1caa2df9697f6e.png" alt="Mandatory route parameter customerId">
+        <p class="img-caption">↑ Curly braces mark a mandatory parameter: pattern "detail/{customerId}"</p>
+
+        <pre><code>// Sender
+oRouter.navTo("detail", { customerId: "5" });
+
+// Receiver (detail view controller, onInit)
+this.getOwnerComponent().getRouter()
+  .getRoute("detail")
+  .attachPatternMatched(this._onObjectMatched, this);
+
+_onObjectMatched: function (oEvent) {
+  var sCustomerId = oEvent.getParameter("arguments").customerId;
+}</code></pre>
+
+        <div class="callout callout-orange">
+          <span class="icon">⚠️</span>
+          <div class="text">Mandatory parameters use <code>{param}</code> in the pattern — the router throws an error if <code>navTo()</code> is called without supplying them. <code>attachPatternMatched</code>'s second argument rebinds <code>this</code> to the view controller inside the handler.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quiz-section">
+      <h3>🧠 Unit 7 Quiz</h3>
+      <div class="quiz-q">
+        <div class="q-text">Q1: Which three sections make up the routing configuration in manifest.json?</div>
+        <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+        <div class="answer-reveal">✅ config, routes, targets</div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">Q2: What method does the router provide to navigate to a specific route?</div>
+        <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+        <div class="answer-reveal">✅ navTo</div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">Q3: What property specifies the fallback target shown when no route matches the current hash?</div>
+        <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+        <div class="answer-reveal">✅ bypassed</div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">Q4: What must be called in Component.js init() so the current hash is evaluated automatically?</div>
+        <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+        <div class="answer-reveal">✅ this.getRouter().initialize();</div>
+      </div>
+      <div class="quiz-q">
+        <div class="q-text">Q5: For pattern "detail/{customerId}", which hashes match?</div>
+        <button class="reveal-btn" onclick="reveal(this)">Reveal Answer</button>
+        <div class="answer-reveal">✅ Any hash supplying a value for customerId, e.g. detail/456 or detail/(00505604-...) — but not the bare "detail" or "detail/" with nothing after it</div>
+      </div>
+    </div>
+
+    <div class="key-takeaways">
+      <h3>🎯 Unit 7 Key Takeaways</h3>
+      <ul>
+        <li>Hash-based navigation: no reload, supports bookmarks/deep links</li>
+        <li>Routing config = config (defaults) + routes (name/pattern) + targets (view/component)</li>
+        <li>Router must be initialized in Component.js init() via this.getRouter().initialize()</li>
+        <li>navTo(name, params, bReplace) — bReplace=true avoids a browser-history entry</li>
+        <li>Custom Back button: History.getPreviousHash() then window.history.go(-1) or navTo fallback</li>
+        <li>bypassed → notFound target for unmatched hashes; {param} = mandatory route parameter</li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<button class="scroll-top" id="scrollBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+let visited = new Set([1]);
+
+function showUnit(n, btn) {
+  document.querySelectorAll('.unit').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('unit-' + n).classList.add('active');
+  btn.classList.add('active');
+  document.getElementById('current-unit').textContent = btn.querySelector('.label').childNodes[0].textContent.trim();
+  visited.add(n);
+  updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function updateProgress() {
+  const pct = Math.round((visited.size / 7) * 100);
+  document.getElementById('pfill').style.width = pct + '%';
+  document.getElementById('pct').textContent = pct + '%';
+}
+
+function reveal(btn) {
+  const ans = btn.nextElementSibling;
+  ans.style.display = ans.style.display === 'block' ? 'none' : 'block';
+  btn.textContent = ans.style.display === 'block' ? 'Hide Answer' : 'Reveal Answer';
+}
+
+function toggleAcc(head) {
+  const body = head.nextElementSibling;
+  const arrow = head.querySelector('.acc-arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+window.addEventListener('scroll', () => {
+  const btn = document.getElementById('scrollBtn');
+  btn.classList.toggle('show', window.scrollY > 300);
+});
+
+updateProgress();
+</script>
+</body>
+</html>
